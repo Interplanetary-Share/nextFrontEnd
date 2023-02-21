@@ -1,4 +1,3 @@
-import React from 'react';
 interface IFileToBlob {
   file: File;
   callback: (blob: any) => void;

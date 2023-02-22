@@ -1,6 +1,9 @@
 import { fetchUploadFile } from '@/app/store/slices/uploadFile/uploadFile.action';
-import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
-import fileToBuffer from '@/app/utils/previewFile/fileToBuffer';
+import {
+  setEmptyFileInfo,
+  setFileInfo,
+} from '@/app/store/slices/uploadFile/uploadFile.slice';
+import fileToBuffer from '@/app/utils/convert/fileToBuffer';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../general/modal/modal';
@@ -59,7 +62,11 @@ const UploadFile = () => {
 
   const handleUploadFile = () => {
     if (!allowUpload) return;
-    dispatch(fetchUploadFile() as any);
+    dispatch(fetchUploadFile() as any)
+      .unwrap()
+      .then(() => {
+        dispatch(setEmptyFileInfo());
+      });
   };
 
   return (

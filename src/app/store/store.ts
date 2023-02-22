@@ -1,10 +1,29 @@
-import { configureStore } from '@reduxjs/toolkit';
+'use client';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import infoFileSlice from './slices/infoFile/infoFile.slice';
 import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-export default configureStore({
-  reducer: {
-    uploadFile: uploadFileSlice,
-  },
+const persistConfig = {
+  key: 'intershare',
+  storage,
+  whitelist: ['uploadFile'],
+  // blacklist: ['infoFile'],
+};
+
+const rootReducer = {
+  uploadFile: uploadFileSlice,
+  infoFile: infoFileSlice,
+};
+
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers(rootReducer)
+);
+
+const store = configureStore({
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       ignoreActions: true,
@@ -27,3 +46,7 @@ export default configureStore({
     },
   },
 });
+
+// export const persistor = persistStore(store);
+
+export default store;

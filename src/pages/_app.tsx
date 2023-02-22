@@ -3,6 +3,7 @@ import RootLayout from '@/app/layout';
 import store from '@/app/store/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import persistStore from 'redux-persist/es/persistStore';
 // import { useEffect } from 'react';
 // import firebase from '../src/app/firebase';
 // import TagManager from 'react-gtm-module';

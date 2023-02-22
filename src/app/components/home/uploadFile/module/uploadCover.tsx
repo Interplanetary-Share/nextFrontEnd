@@ -1,6 +1,6 @@
 import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
-import fileToBlob from '@/app/utils/previewFile/fileToBlob';
-import fileToBuffer from '@/app/utils/previewFile/fileToBuffer';
+import fileToBlob from '@/app/utils/convert/fileToBlob';
+import fileToBuffer from '@/app/utils/convert/fileToBuffer';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

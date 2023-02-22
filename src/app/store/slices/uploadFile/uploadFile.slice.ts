@@ -79,6 +79,6 @@ const uploadFileSlice = createSlice({
   },
 });
 
-export const { setFileInfo } = uploadFileSlice.actions;
+export const { setFileInfo, setEmptyFileInfo } = uploadFileSlice.actions;
 
 export default uploadFileSlice.reducer;

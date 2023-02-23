@@ -1,12 +1,10 @@
 'use client';
 import Container from '@/app/components/general/containers/container';
-import { fetchInfoFileRemotely } from '@/app/store/slices/infoFile/infoFile.action';
+import FileDatils from '@/app/components/infoPage/fileDetails/fileDatils';
+import FileOptions from '@/app/components/infoPage/fileOptions/fileOptions';
 import { setCidFile } from '@/app/store/slices/infoFile/infoFile.slice';
-import { persistor } from '@/app/store/store';
-import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
-import WrapperFileType from '@/app/utils/previewFile/wrapperFileType';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const InfoPage = () => {
@@ -27,16 +25,8 @@ const InfoPage = () => {
 
   return (
     <Container>
-      <div>{cid}</div>
-      <div>asdasfsdafsdadfasdf</div>
-      <div>{size}</div>
-      <div>asdasfsdafsdadfasdf</div>
-      <div>{type}</div>
-      <div>asdasfsdafsdadfasdf</div>
-      <div>{lastModified}</div>
-      {type && cid && (
-        <WrapperFileType type={type} src={getIpfsGateway(cid as string)} />
-      )}
+      <FileDatils />
+      <FileOptions />
     </Container>
   );
 };

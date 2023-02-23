@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInfoFileRemotely } from '../store/slices/infoFile/infoFile.action';
+import {
+  fetchInfoFileFromDb,
+  fetchInfoFileRemotely,
+} from '../store/slices/infoFile/infoFile.action';
+import { setLinkFile } from '../store/slices/infoFile/infoFile.slice';
+import { getIpfsGateway } from '../utils/ipfs/gateways';
 
 const useGetFileInfo = () => {
   const {
@@ -17,7 +22,9 @@ const useGetFileInfo = () => {
     if (cid && cid !== '') {
       console.log('useGetFileInfo: cid', cid);
 
+      dispatch(setLinkFile(getIpfsGateway(cid)) as any);
       dispatch(fetchInfoFileRemotely() as any);
+      dispatch(fetchInfoFileFromDb() as any);
     }
   }, [cid]);
 };

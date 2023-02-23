@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { fetchFilesFromDb } from '@/app/store/slices/files/allFiles.action';
-import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const BasicList = () => {
   const { basicList } = useSelector((state: any) => state.allFiles);

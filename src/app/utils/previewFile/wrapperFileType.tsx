@@ -4,19 +4,47 @@ import React from 'react';
 interface WrapperFileTypeProps {
   type: string;
   src: string;
+  width?: number | string;
 }
 
-const WrapperFileType = ({ type, src }: WrapperFileTypeProps) => {
+const WrapperFileType = ({ type, src, width = 300 }: WrapperFileTypeProps) => {
   if (type.includes('image')) {
-    return <img src={src} alt="image" />;
+    return (
+      <img
+        src={src}
+        alt="image"
+        style={{
+          width: width,
+          maxHeight: 'hscreen',
+        }}
+      />
+    );
   }
 
   if (type.includes('video')) {
-    return <video src={src} controls />;
+    return (
+      <video
+        src={src}
+        controls
+        style={{
+          width: width,
+          maxHeight: 'hscreen',
+        }}
+      />
+    );
   }
 
   if (type.includes('audio')) {
-    return <audio src={src} controls />;
+    return (
+      <audio
+        src={src}
+        controls
+        style={{
+          width: width,
+          maxHeight: 'hscreen',
+        }}
+      />
+    );
   }
 
   if (type.includes('text')) {

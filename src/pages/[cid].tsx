@@ -22,9 +22,7 @@ const InfoPage = () => {
 
   useEffect(() => {
     if (!cid || cid === '') return;
-
     dispatch(setCidFile(cid));
-    dispatch(fetchInfoFileRemotely() as any);
   }, [cid]);
 
   return (

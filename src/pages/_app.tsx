@@ -1,9 +1,9 @@
-import { Provider } from 'react-redux';
+import HooksContainer from '@/app/hooks/hooksContainer';
 import RootLayout from '@/app/layout';
 import store from '@/app/store/store';
+import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import persistStore from 'redux-persist/es/persistStore';
 // import { useEffect } from 'react';
 // import firebase from '../src/app/firebase';
 // import TagManager from 'react-gtm-module';
@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }: any) {
         <Component {...pageProps} />
       </RootLayout>
       <ToastContainer position="top-center" rtl={false} newestOnTop={false} />
+      <HooksContainer />
     </Provider>
   );
 }

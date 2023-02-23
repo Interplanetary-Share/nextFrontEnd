@@ -2,14 +2,13 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IUploadFile } from './uploadFile.slice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { apiFileUpload } from '../../endpoints';
 
 export const fetchUploadFile = createAsyncThunk(
   'uploadFile/fetchUploadFile',
   async (data, { rejectWithValue, getState }) => {
     const { uploadFile } = getState() as any;
     const { name, description, tags, type, octetStream } = uploadFile;
-    const apiFileUpload =
-      process.env.NEXT_PUBLIC_API_HOSTNAME + '/file/upload/';
 
     // upload file to ipfs
     const { cid: cidFile, size: sizeFile } = await axios

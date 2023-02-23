@@ -4,6 +4,7 @@ import infoFileSlice from './slices/infoFile/infoFile.slice';
 import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import allFilesSlice from './slices/files/allFiles.slice';
 
 const persistConfig = {
   key: 'intershare',
@@ -15,6 +16,7 @@ const persistConfig = {
 const rootReducer = {
   uploadFile: uploadFileSlice,
   infoFile: infoFileSlice,
+  allFiles: allFilesSlice,
 };
 
 const persistedReducer = persistReducer(

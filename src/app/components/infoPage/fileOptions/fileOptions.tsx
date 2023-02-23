@@ -24,7 +24,7 @@ const FileOptions = () => {
         <a
           data-tooltip-id="download"
           onClick={() => {
-            dispatch(fetchDownloadFile());
+            dispatch(fetchDownloadFile() as any);
           }}
           className="btn text-3xl"
         >

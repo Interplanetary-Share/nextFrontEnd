@@ -2,6 +2,7 @@
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import { format } from 'date-fns';
+import { Key } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Field {
@@ -56,30 +57,22 @@ const InfoTable = () => {
         )}
 
         <dl className="grid grid-cols-1 gap-x-4 gap-y-8">
-          {fields.map((field) => (
-            <div key={field.key} className="sm:col-span-1 p-3 m-3">
+          {fields.map((field, idx) => (
+            <div key={idx} className="sm:col-span-1 p-3 m-3">
               <dt className="text-sm font-medium text-gray-500">{field.key}</dt>
               <dd className="mt-1 text-sm text-gray-900">{field.value}</dd>
             </div>
           ))}
 
           <div className="sm:col-span-2">
-            {tags.map((tag: string) => (
+            {tags.map((tag: string, idx: Key | null | undefined) => (
               <span
-                key={tag}
+                key={idx}
                 className="badge badge-outline px-2 mx-2 my-1 py-1"
               >
                 {tag}
               </span>
             ))}
-          </div>
-
-          <div className="sm:col-span-2">
-            <dt className="text-sm font-medium text-gray-500">Description</dt>
-            <dd
-              className="mt-1 max-w-prose space-y-5 text-sm text-gray-900"
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
           </div>
         </dl>
       </div>

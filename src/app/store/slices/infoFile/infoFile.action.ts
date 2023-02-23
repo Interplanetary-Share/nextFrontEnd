@@ -2,6 +2,7 @@ import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import fileDownload from 'js-file-download';
+import { toast } from 'react-toastify';
 import { apiFiles } from '../../endpoints';
 import { IInfoFile } from './infoFile.slice';
 
@@ -126,12 +127,15 @@ export const fetchDownloadFile = createAsyncThunk(
 );
 export const fetchDownloadFileReducer = {
   [fetchDownloadFile.pending as any]: (state: IInfoFile) => {
+    toast.info('Downloading file...');
     state.fetchDownloadFile.loading = true;
   },
   [fetchDownloadFile.fulfilled as any]: (state: IInfoFile, action: any) => {
+    toast.success('File downloaded successfully!');
     state.fetchDownloadFile.loading = false;
   },
   [fetchDownloadFile.rejected as any]: (state: IInfoFile, action: any) => {
+    toast.error('Error downloading file!');
     state.fetchDownloadFile.loading = false;
     state.fetchDownloadFile.error = action.error.message;
   },

@@ -12,3 +12,8 @@
 .rti--input {
   background: none;
 }
+
+/* Transition */
+* {
+  transition: all 0.3s ease-in-out;
+}

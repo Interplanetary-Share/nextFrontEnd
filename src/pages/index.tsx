@@ -1,11 +1,13 @@
-import BasicList from '@/app/components/home/files/basicList/basicList';
+import FilesList from '@/app/components/home/files/filesList';
 import Hero from '@/app/components/home/hero/hero';
+import Tags from '@/app/components/home/tags/tags';
 
 const Home = () => {
   return (
     <main>
       <Hero />
-      <BasicList />
+      <Tags />
+      <FilesList />
     </main>
   );
 };

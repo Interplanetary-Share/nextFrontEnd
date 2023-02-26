@@ -1,9 +1,8 @@
 import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import fileDownload from 'js-file-download';
 import { toast } from 'react-toastify';
-import { apiFiles } from '../../endpoints';
+import { apiFiles, apiFilesStats } from '../../endpoints';
 import { IInfoFile } from './infoFile.slice';
 
 export const fetchInfoFileRemotely = createAsyncThunk(
@@ -60,7 +59,20 @@ export const fetchInfoFileFromDb = createAsyncThunk(
     return await axios
       .get(apiFileInfo)
       .then((res) => {
-        const { name, description, tags, size, type, cover, date } = res.data;
+        const {
+          name,
+          description,
+          tags,
+          size,
+          type,
+          cover,
+          date,
+          owner,
+          likes,
+          dislikes,
+          favorites,
+          reports,
+        } = res.data;
 
         return {
           name,
@@ -70,6 +82,11 @@ export const fetchInfoFileFromDb = createAsyncThunk(
           type,
           cover,
           date,
+          owner,
+          likes,
+          dislikes,
+          favorites,
+          reports,
         };
       })
       .catch((err) => {
@@ -82,7 +99,20 @@ export const fetchInfoFileFromDbReducer = {
     state.fetchInfoFileFromDb.loading = true;
   },
   [fetchInfoFileFromDb.fulfilled as any]: (state: IInfoFile, action: any) => {
-    const { size, type, name, description, tags, cover, date } = action.payload;
+    const {
+      size,
+      type,
+      name,
+      description,
+      tags,
+      cover,
+      date,
+      owner,
+      likes,
+      dislikes,
+      favorites,
+      reports,
+    } = action.payload;
 
     if (size) state.size = size;
     if (type) state.type = type;
@@ -91,6 +121,11 @@ export const fetchInfoFileFromDbReducer = {
     if (tags) state.tags = tags;
     if (cover) state.cover = cover;
     if (date) state.date = date;
+    if (owner) state.owner = owner;
+    if (likes) state.likes = likes;
+    if (dislikes) state.dislikes = dislikes;
+    if (favorites) state.favorites = favorites;
+    if (reports) state.reports = reports;
 
     state.fetchInfoFileFromDb.loading = false;
   },
@@ -138,5 +173,51 @@ export const fetchDownloadFileReducer = {
     toast.error('Error downloading file!');
     state.fetchDownloadFile.loading = false;
     state.fetchDownloadFile.error = action.error.message;
+  },
+};
+
+export const fetchStatsFile = createAsyncThunk(
+  'infoFile/fetchStatsFile',
+  async (data, { rejectWithValue, getState }) => {
+    const { infoFile } = getState() as any;
+    const { cid } = infoFile;
+    const apiFileInfo = apiFilesStats + cid;
+
+    if (!cid || cid === '') return rejectWithValue('CID is empty');
+
+    return await axios
+      .get(apiFileInfo)
+      .then((res) => {
+        const { likes, dislikes, reports, favorites } = res.data;
+
+        return {
+          likes,
+          dislikes,
+          reports,
+          favorites,
+        };
+      })
+      .catch((err) => {
+        return rejectWithValue(err.response.data);
+      });
+  }
+);
+export const fetchStatsFileReducer = {
+  [fetchStatsFile.pending as any]: (state: IInfoFile) => {
+    state.fetchStatsFile.loading = true;
+  },
+  [fetchStatsFile.fulfilled as any]: (state: IInfoFile, action: any) => {
+    const { likes, dislikes, reports, favorites } = action.payload;
+
+    if (likes) state.likes = likes;
+    if (dislikes) state.dislikes = dislikes;
+    if (reports) state.reports = reports;
+    if (favorites) state.favorites = favorites;
+
+    state.fetchStatsFile.loading = false;
+  },
+  [fetchStatsFile.rejected as any]: (state: IInfoFile, action: any) => {
+    state.fetchStatsFile.loading = false;
+    state.fetchStatsFile.error = action.error.message;
   },
 };

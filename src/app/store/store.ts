@@ -1,15 +1,16 @@
-'use client';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import infoFileSlice from './slices/infoFile/infoFile.slice';
-import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import allFilesSlice from './slices/files/allFiles.slice';
+import infoFileSlice from './slices/infoFile/infoFile.slice';
+import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
+import ipfsSlice from './slices/ipfs/ipfs.slice';
+import userSlice from './slices/user/user.slice';
 
 const persistConfig = {
   key: 'intershare',
   storage,
-  whitelist: ['uploadFile'],
+  // whitelist: ['uploadFile'],
   // blacklist: ['infoFile'],
 };
 
@@ -17,6 +18,8 @@ const rootReducer = {
   uploadFile: uploadFileSlice,
   infoFile: infoFileSlice,
   allFiles: allFilesSlice,
+  user: userSlice,
+  ipfs: ipfsSlice,
 };
 
 const persistedReducer = persistReducer(

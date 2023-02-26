@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchInfoFileFromDb,
@@ -9,16 +9,10 @@ import { setLinkFile } from '../store/slices/infoFile/infoFile.slice';
 import { getIpfsGateway } from '../utils/ipfs/gateways';
 
 const useGetFileInfo = () => {
-  const {
-    cid,
-    fetchInfoFileRemotely: { loading: fetchInfoFileRemotelyLoading },
-  } = useSelector((state: any) => state.infoFile);
+  const { cid } = useSelector((state: any) => state.infoFile);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (fetchInfoFileRemotelyLoading) {
-      return;
-    }
 
+  useMemo(() => {
     if (cid && cid !== '') {
       console.log('useGetFileInfo: cid', cid);
 

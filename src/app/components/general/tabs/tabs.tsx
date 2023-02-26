@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface TabsProps {
   activeTab: string;
@@ -19,7 +19,7 @@ const Tabs = ({ tabs, activeTab: activeTabProp, onTabChange }: TabsProps) => {
     setactiveTab(key);
   };
 
-  useEffect(() => {
+  useMemo(() => {
     if (!onTabChange) return;
     onTabChange(activeTab);
   }, [activeTab]);

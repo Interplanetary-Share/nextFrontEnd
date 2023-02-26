@@ -1,10 +1,6 @@
 import { fetchUploadFile } from '@/app/store/slices/uploadFile/uploadFile.action';
-import {
-  setEmptyFileInfo,
-  setFileInfo,
-} from '@/app/store/slices/uploadFile/uploadFile.slice';
-import fileToBuffer from '@/app/utils/convert/fileToBuffer';
-import React, { useEffect, useState } from 'react';
+import { setEmptyFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../general/modal/modal';
 import FormUpload from './module/formUpload';
@@ -16,34 +12,7 @@ const UploadFile = () => {
   );
   const dispatch = useDispatch();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event?.target?.files?.[0];
-    if (!file) return;
-
-    dispatch(
-      setFileInfo({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      })
-    );
-    fileToBuffer(file).then((fileBuffer) => {
-      dispatch(
-        setFileInfo({
-          octetStream: {
-            file: fileBuffer,
-          },
-        })
-      );
-    });
-
-    // click the button to open the modal
-    document.getElementById('opnUploadFileModal')?.click();
-  };
-
-  const [allowUpload, setAllowUpload] = useState(false);
-
-  useEffect(() => {
+  const allowUpload = useMemo(() => {
     if (
       !name ||
       !description ||
@@ -52,12 +21,10 @@ const UploadFile = () => {
       !octetStream.file ||
       !octetStream.cover
     ) {
-      setAllowUpload(false);
+      return false;
     } else {
-      setAllowUpload(true);
+      return true;
     }
-
-    // TODO poder poner un limite de tamaño de archivo
   }, [name, description, tags, octetStream]);
 
   const handleUploadFile = () => {
@@ -71,11 +38,6 @@ const UploadFile = () => {
 
   return (
     <>
-      <input
-        type="file"
-        className="file-input w-full max-w-xs my-6"
-        onChange={handleFileChange}
-      />
       <label id="opnUploadFileModal" htmlFor="uploadFile" className="hidden">
         open modal
       </label>

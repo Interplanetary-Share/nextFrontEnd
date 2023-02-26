@@ -1,18 +1,13 @@
+import firebaseInitialization from '@/app/firebase';
 import HooksContainer from '@/app/hooks/hooksContainer';
-import RootLayout from '@/app/layout';
+import RootLayout from '@/app/components/layout';
 import store from '@/app/store/store';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import { useEffect } from 'react';
-// import firebase from '../src/app/firebase';
-// import TagManager from 'react-gtm-module';
 
 function MyApp({ Component, pageProps }: any) {
-  //   firebase();
-  //   useEffect(() => {
-  //     TagManager.initialize({ gtmId: 'G-X9780PKFXK' });
-  //   }, []);
+  firebaseInitialization();
 
   return (
     <Provider store={store}>

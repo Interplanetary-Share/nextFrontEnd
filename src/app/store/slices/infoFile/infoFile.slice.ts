@@ -20,6 +20,13 @@ export interface IInfoFile {
 
   link: string;
 
+  likes: string[];
+  dislikes: string[];
+  favorites: string[];
+  reports: string[];
+
+  owner: string;
+
   fetchInfoFileRemotely: {
     loading: boolean;
     error: string;
@@ -29,6 +36,10 @@ export interface IInfoFile {
     error: string;
   };
   fetchDownloadFile: {
+    loading: boolean;
+    error: string;
+  };
+  fetchStatsFile: {
     loading: boolean;
     error: string;
   };
@@ -47,6 +58,11 @@ const initialState: IInfoFile = {
   date: '',
 
   link: '',
+  likes: [],
+  dislikes: [],
+  favorites: [],
+  reports: [],
+  owner: '',
 
   fetchInfoFileRemotely: {
     loading: false,
@@ -57,6 +73,10 @@ const initialState: IInfoFile = {
     error: '',
   },
   fetchDownloadFile: {
+    loading: false,
+    error: '',
+  },
+  fetchStatsFile: {
     loading: false,
     error: '',
   },

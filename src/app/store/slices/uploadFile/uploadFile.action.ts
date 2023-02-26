@@ -8,6 +8,8 @@ export const fetchUploadFile = createAsyncThunk(
   'uploadFile/fetchUploadFile',
   async (data, { rejectWithValue, getState }) => {
     const { uploadFile } = getState() as any;
+    const { user } = getState() as any;
+    const { id } = user;
     const { name, description, tags, type, octetStream } = uploadFile;
 
     // upload file to ipfs
@@ -43,6 +45,7 @@ export const fetchUploadFile = createAsyncThunk(
         size: sizeFile,
         type: type,
         cover: cidCover,
+        owner: id,
       })
       .then((res) => res.data)
       .catch((err) => {

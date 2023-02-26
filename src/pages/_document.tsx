@@ -6,10 +6,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          {/* <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-X9780PKFXK"
-          ></script> */}
+          <script src="https://cdn.jsdelivr.net/npm/ipfs-core/dist/index.min.js"></script>
         </Head>
         <body>
           <Main />

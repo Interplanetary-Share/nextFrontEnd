@@ -2,23 +2,30 @@
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  fetchCoverData,
+  fetchFileData,
   fetchInfoFileFromDb,
-  fetchInfoFileRemotely,
 } from '../store/slices/infoFile/infoFile.action';
-import { setLinkFile } from '../store/slices/infoFile/infoFile.slice';
-import { getIpfsGateway } from '../utils/ipfs/gateways';
 
 const useGetFileInfo = () => {
-  const { cid } = useSelector((state: any) => state.infoFile);
+  const { cid, found } = useSelector((state: any) => state.infoFile);
   const dispatch = useDispatch();
 
   useMemo(() => {
     if (cid && cid !== '') {
       console.log('useGetFileInfo: cid', cid);
 
-      dispatch(setLinkFile(getIpfsGateway(cid)) as any);
-      dispatch(fetchInfoFileRemotely() as any);
-      dispatch(fetchInfoFileFromDb() as any);
+      dispatch(fetchInfoFileFromDb() as any)
+        .unwrap()
+        .then((res: any) => {
+          if (found) {
+            dispatch(fetchFileData() as any);
+            dispatch(fetchCoverData() as any);
+          }
+        })
+        .catch((err: any) => {
+          console.log('err', err);
+        });
     }
   }, [cid]);
 };

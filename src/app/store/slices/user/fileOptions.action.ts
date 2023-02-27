@@ -13,10 +13,10 @@ import { IUser } from './user.slice';
 
 export const fetchLikeNewFile = createAsyncThunk(
   'user/fetchLikeNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserLike + cid, {
@@ -50,10 +50,10 @@ export const fetchLikeNewFileReducer = {
 
 export const fetchUnlikeNewFile = createAsyncThunk(
   'user/fetchUnlikeNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserUnlike + cid, {
@@ -85,10 +85,10 @@ export const fetchUnlikeNewFileReducer = {
 
 export const fetchDislikeNewFile = createAsyncThunk(
   'user/fetchDislikeNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserDislike + cid, {
@@ -122,10 +122,10 @@ export const fetchDislikeNewFileReducer = {
 
 export const fetchUndislikeNewFile = createAsyncThunk(
   'user/fetchUndislikeNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserUndislike + cid, {
@@ -157,10 +157,10 @@ export const fetchUndislikeNewFileReducer = {
 
 export const fetchFavoriteNewFile = createAsyncThunk(
   'user/fetchFavoriteNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserFavorite + cid, {
@@ -194,10 +194,10 @@ export const fetchFavoriteNewFileReducer = {
 
 export const fetchUnfavoriteNewFile = createAsyncThunk(
   'user/fetchUnfavoriteNewFile',
-  async (data, { rejectWithValue, getState }) => {
-    const { user, infoFile } = getState() as any;
+  async (data: any, { rejectWithValue, getState }) => {
+    const { user } = getState() as any;
     const { id, email } = user;
-    const { cid } = infoFile;
+    const { cid } = data;
 
     return await axios
       .post(apiUserUnfavorite + cid, {

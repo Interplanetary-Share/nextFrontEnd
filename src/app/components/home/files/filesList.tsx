@@ -8,22 +8,43 @@ import Card from './module/card';
 
 const FilesList = () => {
   const { basicList } = useSelector((state: any) => state.allFiles);
-  //   <div key={file._id} className="bg-secondary rounded-md">
-  //   <div>{file.cid}</div>
-  //   <div>{file.name}</div>
-  //   <div>{file.size}</div>
-  //   <div>{file.type}</div>
-  //   <div>{file.lastModified}</div>
-  //   <Link href={'/' + file.cid}>Link</Link>
-  // </div>
+
   return (
     <Grid>
       {basicList.map((file: any) => {
-        const { cid, name, type, size, _id, description, date, cover, tags } =
-          file;
+        const {
+          cid,
+          name,
+          type,
+          size,
+          _id,
+          description,
+          date,
+          cover,
+          tags,
+          likes,
+          dislikes,
+          reports,
+          favorites,
+          link,
+        } = file;
 
         return (
-          <Card key={_id} cid={cid} name={name} description={description} />
+          <Card
+            key={_id}
+            cid={cid}
+            name={name}
+            description={description}
+            likes={likes}
+            dislikes={dislikes}
+            reports={reports}
+            favorites={favorites}
+            link={link}
+            cover={cover}
+            date={date}
+            size={size}
+            type={type}
+          />
         );
       })}
     </Grid>

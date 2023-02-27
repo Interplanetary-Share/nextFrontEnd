@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  fetchCoverDataReducer,
   fetchDownloadFileReducer,
+  fetchFileDataReducer,
   fetchInfoFileFromDbReducer,
-  fetchInfoFileRemotelyReducer,
+  fetchStatsCurrentFileReducer,
 } from './infoFile.action';
 
 export interface IInfoFile {
@@ -19,6 +21,7 @@ export interface IInfoFile {
   date: string;
 
   link: string;
+  coverLink: string;
 
   likes: string[];
   dislikes: string[];
@@ -27,10 +30,12 @@ export interface IInfoFile {
 
   owner: string;
 
-  fetchInfoFileRemotely: {
-    loading: boolean;
-    error: string;
-  };
+  found: boolean;
+
+  // fetchInfoFileRemotely: {
+  //   loading: boolean;
+  //   error: string;
+  // };
   fetchInfoFileFromDb: {
     loading: boolean;
     error: string;
@@ -39,7 +44,15 @@ export interface IInfoFile {
     loading: boolean;
     error: string;
   };
-  fetchStatsFile: {
+  fetchStatsCurrentFile: {
+    loading: boolean;
+    error: string;
+  };
+  fetchFileData: {
+    loading: boolean;
+    error: string;
+  };
+  fetchCoverData: {
     loading: boolean;
     error: string;
   };
@@ -58,16 +71,19 @@ const initialState: IInfoFile = {
   date: '',
 
   link: '',
+  coverLink: '',
+
   likes: [],
   dislikes: [],
   favorites: [],
   reports: [],
   owner: '',
 
-  fetchInfoFileRemotely: {
-    loading: false,
-    error: '',
-  },
+  found: true,
+  // fetchInfoFileRemotely: {
+  //   loading: false,
+  //   error: '',
+  // },
   fetchInfoFileFromDb: {
     loading: false,
     error: '',
@@ -76,7 +92,15 @@ const initialState: IInfoFile = {
     loading: false,
     error: '',
   },
-  fetchStatsFile: {
+  fetchStatsCurrentFile: {
+    loading: false,
+    error: '',
+  },
+  fetchFileData: {
+    loading: false,
+    error: '',
+  },
+  fetchCoverData: {
     loading: false,
     error: '',
   },
@@ -89,17 +113,17 @@ const infoFileSlice = createSlice({
     setCidFile: (state, action) => {
       state.cid = action.payload;
     },
-    setLinkFile: (state, action) => {
-      state.link = action.payload;
-    },
   },
   extraReducers: {
-    ...fetchInfoFileRemotelyReducer,
+    // ...fetchInfoFileRemotelyReducer,
     ...fetchInfoFileFromDbReducer,
     ...fetchDownloadFileReducer,
+    ...fetchFileDataReducer,
+    ...fetchCoverDataReducer,
+    ...fetchStatsCurrentFileReducer,
   },
 });
 
-export const { setCidFile, setLinkFile } = infoFileSlice.actions;
+export const { setCidFile } = infoFileSlice.actions;
 
 export default infoFileSlice.reducer;

@@ -8,12 +8,13 @@ import useInitIpfs from './useInitIpfs';
 import useRedirect from './useRedirect';
 
 const HooksContainer = () => {
-  useRedirect();
-  useGetFileInfo();
-  useGetFiles();
-  useCheckUserInfo();
-  useAnalitics();
   useInitIpfs();
+  useAnalitics();
+  useRedirect();
+  useCheckUserInfo();
+
+  useGetFiles();
+  useGetFileInfo();
 
   return (
     <>

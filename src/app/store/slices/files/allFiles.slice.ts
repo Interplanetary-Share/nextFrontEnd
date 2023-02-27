@@ -1,9 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchFilesFromDbReducer } from './allFiles.action';
+import {
+  fetchFilesFromDbReducer,
+  fetchStatsFileReducer,
+} from './allFiles.action';
+
+export interface ISingleFile {
+  _id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  type: string;
+  size: number | string;
+  cid: string;
+  date: string;
+  __v?: number;
+  dislikes: string[];
+  favorites: string[];
+  likes: string[];
+  reports: string[];
+}
 
 export interface IAllFiles {
-  basicList: [];
+  basicList: Array<ISingleFile>;
   fetchFilesFromDb: {
+    loading: boolean;
+    error: string;
+  };
+  fetchStatsFile: {
     loading: boolean;
     error: string;
   };
@@ -15,6 +38,10 @@ const initialState: IAllFiles = {
     loading: false,
     error: '',
   },
+  fetchStatsFile: {
+    loading: false,
+    error: '',
+  },
 };
 
 const allFilesSlice = createSlice({
@@ -23,6 +50,7 @@ const allFilesSlice = createSlice({
   reducers: {},
   extraReducers: {
     ...fetchFilesFromDbReducer,
+    ...fetchStatsFileReducer,
   },
 });
 

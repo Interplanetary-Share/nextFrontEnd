@@ -11,17 +11,8 @@ interface Field {
 }
 
 const InfoTable = () => {
-  const {
-    cid,
-    size,
-    type,
-    lastModified,
-    name,
-    description,
-    tags,
-    cover,
-    date,
-  } = useSelector((state: any) => state.infoFile);
+  const { coverLink, size, type, lastModified, tags, cover, date } =
+    useSelector((state: any) => state.infoFile);
 
   const fields: Array<Field> = [
     size && {
@@ -51,7 +42,7 @@ const InfoTable = () => {
         {cover && (
           <div className="avatar w-full">
             <div className="w-64 rounded mx-auto">
-              <img src={getIpfsGateway(cover)} alt="cover" />
+              <img src={coverLink} alt="cover" />
             </div>
           </div>
         )}

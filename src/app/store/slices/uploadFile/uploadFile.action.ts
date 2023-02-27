@@ -22,39 +22,27 @@ export const fetchUploadFile = createAsyncThunk(
         },
       })
       .then((res) => {
-        console.log(`UploadFileToIPFSServer => res.data:`, res.data);
         return res.data;
       })
       .catch((err) => {
         console.log(err);
       });
 
-    // // upload file to ipfs
-    // const streamFile = nativeFile.file.stream();
-    // const { cid: cidFile, size: sizeFile } = await axios
-    //   .post(apiFileUpload, streamFile, {
-    //     headers: {
-    //       'Content-Type': 'application/octet',
-    //     },
-    //     // responseType: 'stream'
-    //   })
-    //   .then((res) => res.data) // en teoria puedo tener un contador de como va la descarga
-    //   .catch((err) => {
-    //     return rejectWithValue(err.response.data);
-    //   });
-
-    // // upload cover to ipfs
-    // const coverFile = nativeFile.cover.stream();
-    // const { cid: cidCover } = await axios
-    //   .post(apiFileUpload, coverFile, {
-    //     headers: {
-    //       'Content-Type': 'application/octet',
-    //     },
-    //   })
-    //   .then((res) => res.data)
-    //   .catch((err) => {
-    //     return rejectWithValue(err.response.data);
-    //   });
+    // axios upload  multipart
+    const formDataCover = new FormData();
+    formDataCover.append('file', nativeFile.cover);
+    const { cid: cidCover } = await axios
+      .post(apiFileUpload, formDataCover, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     // upload info to db
     return await axios
@@ -65,8 +53,7 @@ export const fetchUploadFile = createAsyncThunk(
         tags: tags,
         size: sizeFile,
         type: type,
-        // cover: cidCover,
-        cover: 'disabled',
+        cover: cidCover,
         owner: id,
       })
       .then((res) => res.data)

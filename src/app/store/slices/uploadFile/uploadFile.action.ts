@@ -10,30 +10,51 @@ export const fetchUploadFile = createAsyncThunk(
     const { uploadFile } = getState() as any;
     const { user } = getState() as any;
     const { id } = user;
-    const { name, description, tags, type, octetStream } = uploadFile;
+    const { name, description, tags, type, nativeFile } = uploadFile;
 
-    // upload file to ipfs
+    // axios upload  multipart
+    const formData = new FormData();
+    formData.append('file', nativeFile.file);
     const { cid: cidFile, size: sizeFile } = await axios
-      .post(apiFileUpload, octetStream.file, {
+      .post(apiFileUpload, formData, {
         headers: {
-          'Content-Type': 'application/octet',
+          'Content-Type': 'multipart/form-data',
         },
       })
-      .then((res) => res.data)
-      .catch((err) => {
-        return rejectWithValue(err.response.data);
-      });
-    // upload cover to ipfs
-    const { cid: cidCover } = await axios
-      .post(apiFileUpload, octetStream.cover, {
-        headers: {
-          'Content-Type': 'application/octet',
-        },
+      .then((res) => {
+        console.log(`UploadFileToIPFSServer => res.data:`, res.data);
+        return res.data;
       })
-      .then((res) => res.data)
       .catch((err) => {
-        return rejectWithValue(err.response.data);
+        console.log(err);
       });
+
+    // // upload file to ipfs
+    // const streamFile = nativeFile.file.stream();
+    // const { cid: cidFile, size: sizeFile } = await axios
+    //   .post(apiFileUpload, streamFile, {
+    //     headers: {
+    //       'Content-Type': 'application/octet',
+    //     },
+    //     // responseType: 'stream'
+    //   })
+    //   .then((res) => res.data) // en teoria puedo tener un contador de como va la descarga
+    //   .catch((err) => {
+    //     return rejectWithValue(err.response.data);
+    //   });
+
+    // // upload cover to ipfs
+    // const coverFile = nativeFile.cover.stream();
+    // const { cid: cidCover } = await axios
+    //   .post(apiFileUpload, coverFile, {
+    //     headers: {
+    //       'Content-Type': 'application/octet',
+    //     },
+    //   })
+    //   .then((res) => res.data)
+    //   .catch((err) => {
+    //     return rejectWithValue(err.response.data);
+    //   });
 
     // upload info to db
     return await axios
@@ -44,7 +65,8 @@ export const fetchUploadFile = createAsyncThunk(
         tags: tags,
         size: sizeFile,
         type: type,
-        cover: cidCover,
+        // cover: cidCover,
+        cover: 'disabled',
         owner: id,
       })
       .then((res) => res.data)

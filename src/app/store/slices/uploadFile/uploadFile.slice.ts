@@ -7,6 +7,10 @@ export interface IUploadFile {
   description: string;
   size: number;
   type: string;
+  nativeFile: {
+    file: File | null;
+    cover: File | null;
+  };
   octetStream: {
     file: any;
     cover: any;
@@ -27,6 +31,10 @@ const initialState: IUploadFile = {
   description: '',
   size: 0,
   type: '',
+  nativeFile: {
+    file: null,
+    cover: null,
+  },
   octetStream: {
     file: null,
     cover: null,
@@ -46,14 +54,28 @@ const uploadFileSlice = createSlice({
   initialState,
   reducers: {
     setFileInfo: (state, action) => {
-      const { name, tags, description, size, type, octetStream, blob, cid } =
-        action.payload;
+      const {
+        name,
+        tags,
+        description,
+        size,
+        type,
+        octetStream,
+        blob,
+        cid,
+        nativeFile,
+      } = action.payload;
 
       if (name) state.name = name;
       if (description) state.description = description;
       if (size) state.size = size;
       if (tags) state.tags = tags;
       if (type) state.type = type;
+
+      if (nativeFile) {
+        if (nativeFile.file) state.nativeFile.file = nativeFile.file;
+        if (nativeFile.cover) state.nativeFile.cover = nativeFile.cover;
+      }
 
       if (octetStream) {
         if (octetStream.file) state.octetStream.file = octetStream.file;
@@ -64,14 +86,7 @@ const uploadFileSlice = createSlice({
       }
     },
     setEmptyFileInfo: (state) => {
-      state.name = '';
-      state.description = '';
-      state.size = 0;
-      state.tags = [];
-      state.type = '';
-      state.octetStream.file = null;
-      state.octetStream.cover = null;
-      state.blob.cover = null;
+      state = initialState;
     },
   },
   extraReducers: {

@@ -1,38 +1,77 @@
+import {
+  fetchAddFileToIPFS,
+  fetchDownloadFromIpfs,
+} from '@/app/store/slices/ipfs/ipfs.action';
 import { fetchUploadFile } from '@/app/store/slices/uploadFile/uploadFile.action';
-import { setEmptyFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
+import {
+  IUploadFile,
+  setEmptyFileInfo,
+} from '@/app/store/slices/uploadFile/uploadFile.slice';
+import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import Modal from '../../general/modal/modal';
 import FormUpload from './module/formUpload';
 import UploadCover from './module/uploadCover';
 
 const UploadFile = () => {
-  const { name, description, tags, octetStream } = useSelector(
+  const { name, description, tags, nativeFile } = useSelector(
     (state: any) => state.uploadFile
-  );
+  ) as IUploadFile;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const allowUpload = useMemo(() => {
     if (
       !name ||
       !description ||
       tags.length === 0 ||
-      !octetStream ||
-      !octetStream.file ||
-      !octetStream.cover
+      !nativeFile ||
+      !nativeFile.file ||
+      !nativeFile.cover
     ) {
       return false;
     } else {
       return true;
     }
-  }, [name, description, tags, octetStream]);
+  }, [name, description, tags, nativeFile]);
 
   const handleUploadFile = () => {
-    if (!allowUpload) return;
+    if (!allowUpload) return toast.error('Please fill all fields');
+    const windowObj = window as any;
+    if (!windowObj.ipfsServer) return toast.error('IPFS server not found');
+
     dispatch(fetchUploadFile() as any)
       .unwrap()
       .then(() => {
         dispatch(setEmptyFileInfo());
+      });
+
+    dispatch(fetchAddFileToIPFS({ file: nativeFile.file }) as any)
+      .unwrap()
+      .then(() => {
+        toast.success('File uploaded successfully, distribution in progres...');
+        // dispatch(fetchAddFileToIPFS({ file: nativeFile.cover }) as any)
+        //   .unwrap()
+        //   .then(() => {
+        //     toast.success(
+        //       'Cover uploaded successfully, distribution in progres...'
+        //     );
+        //   });
+
+        toast.info('Distributing file to IPFS network in Background...');
+        dispatch(fetchDownloadFromIpfs() as any)
+          .unwrap()
+          .then((resfetchDownloadFromIpfs: any) => {
+            console.log(
+              `fastlog => resfetchDownloadFromIpfs:`,
+              resfetchDownloadFromIpfs
+            );
+
+            // router.push('/');
+            toast.success('File distributed successfully! Downloading file...');
+          });
       });
   };
 

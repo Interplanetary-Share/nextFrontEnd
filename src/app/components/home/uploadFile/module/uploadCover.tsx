@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
 import fileToBlob from '@/app/utils/convert/fileToBlob';
 import fileToBuffer from '@/app/utils/convert/fileToBuffer';
@@ -11,15 +12,13 @@ const UploadCover = () => {
     const file = event?.target?.files?.[0];
     if (!file) return;
 
-    fileToBuffer(file).then((coverBuffer) => {
-      dispatch(
-        setFileInfo({
-          octetStream: {
-            cover: coverBuffer,
-          },
-        })
-      );
-    });
+    dispatch(
+      setFileInfo({
+        nativeFile: {
+          cover: file,
+        },
+      })
+    );
 
     fileToBlob({
       file,
@@ -41,7 +40,7 @@ const UploadCover = () => {
       {blob.cover ? (
         <>
           <h1 className="text-xl">Cover</h1>
-          <img src={blob.cover} className="w-full h-auto" />
+          <img src={blob.cover} className="w-full h-auto" alt={'cover'} />
         </>
       ) : (
         <div

@@ -1,10 +1,4 @@
-import {
-  fetchAddFileToIPFS,
-  fetchDownloadFromIpfs,
-  fetchDownloadFromIpfsReducer,
-} from '@/app/store/slices/ipfs/ipfs.action';
 import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
-import fileToBuffer from '@/app/utils/convert/fileToBuffer';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -16,26 +10,19 @@ const Hero = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0];
     if (!file) return;
-    console.log(`fastlog => file:`, file);
+    const windowObj = window as any;
+    if (!windowObj.ipfsServer) return toast.error('IPFS server not found');
 
     dispatch(
       setFileInfo({
         name: file.name,
         size: file.size,
         type: file.type,
+        nativeFile: {
+          file: file,
+        },
       })
     );
-
-    dispatch(fetchAddFileToIPFS({ file }) as any)
-      .unwrap()
-      .then(() => {
-        toast.success('File uploaded successfully');
-        toast.info('Distributing file to IPFS network in progress');
-        dispatch(fetchDownloadFromIpfs() as any).then(() => {
-          // router.push('/');
-          toast.success('File distributed successfully! Downloading file...');
-        });
-      });
 
     document.getElementById('opnUploadFileModal')?.click();
   };

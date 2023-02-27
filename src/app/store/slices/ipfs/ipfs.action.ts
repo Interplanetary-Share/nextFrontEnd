@@ -6,13 +6,15 @@ import { apiDownload } from '../../endpoints';
 import { IIpfs } from './ipfs.slice';
 
 interface addFileToIPFS {
-  file: File;
+  file: File | null;
 }
 
 export const fetchAddFileToIPFS = createAsyncThunk(
   'infoFile/fetchAddFileToIPFS',
   async (data: addFileToIPFS, { rejectWithValue, getState }) => {
     const { file } = data;
+    if (!file) return rejectWithValue('File is null');
+
     console.log(`fastlog => file:`, file);
     const windowObj = window as any;
 
@@ -20,9 +22,7 @@ export const fetchAddFileToIPFS = createAsyncThunk(
       return rejectWithValue('IPFS server is not running');
 
     const ipfs = windowObj.ipfsServer;
-
-    const info = await ipfs.id();
-    console.log(`fastlog => info:`, info);
+    if (!ipfs) return rejectWithValue('IPFS server is not running');
 
     // THIUS WORKS ONM NEW SCREEN AND  NEW WINDOW
     // const stream = file.stream().tee();
@@ -39,9 +39,8 @@ export const fetchAddFileToIPFS = createAsyncThunk(
     });
 
     const cid = infoFile.cid.toString();
-    console.log(`fastlog => cid:`, cid);
-
-    console.log(`fastlog => infoFile:`, infoFile);
+    console.log(`fetchAddFileToIPFS => cid:`, cid);
+    console.log(`fetchAddFileToIPFS => infoFile:`, infoFile);
 
     return infoFile;
     // return true;
@@ -58,6 +57,7 @@ export const fetchAddFileToIPFSReducer = {
   [fetchAddFileToIPFS.rejected as any]: (state: IIpfs, action: any) => {
     state.fetchAddFileToIPFS.loading = false;
     state.fetchAddFileToIPFS.error = action.error.message;
+    toast.error(action.error.message);
   },
 };
 
@@ -232,6 +232,7 @@ export const fetchInitIpfsReducer = {
     state.fetchInitIpfs.loading = true;
   },
   [fetchInitIpfs.fulfilled as any]: (state: IIpfs, action: any) => {
+    toast.success('IPFS Initialized');
     state.info.ipfs = action.payload;
     state.fetchInitIpfs.loading = false;
   },
@@ -273,6 +274,8 @@ export const fetchDownloadFromIpfs = createAsyncThunk(
       .catch((err) => {
         console.log(`fastlog => err:`, err);
       });
+
+    return res;
   }
 );
 export const fetchDownloadFromIpfsReducer = {

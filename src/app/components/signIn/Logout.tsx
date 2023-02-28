@@ -1,3 +1,4 @@
+import { setEmptyFiltersBasicList } from '@/app/store/slices/files/allFiles.slice';
 import { fetchSignOut } from '@/app/store/slices/user/user.action';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +12,7 @@ const Logout = () => {
         className="btn btn-error"
         onClick={() => {
           dispatch(fetchSignOut() as any);
+          dispatch(setEmptyFiltersBasicList() as any);
         }}
       >
         Log out

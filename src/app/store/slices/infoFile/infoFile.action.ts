@@ -248,14 +248,33 @@ export const fetchFileData = createAsyncThunk(
 
     if (!cid || cid === '') return rejectWithValue('CID is empty');
 
+    // return await axios
+    //   .post(apiFileInfo, {
+    //     responseType: 'stream',
+    //     headers: {
+    //       'Content-Type': type,
+    //       'Access-Control-Allow-Origin': '*',
+    //       'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    //     },
+    //   })
+    //   .then((res) => {
+    //     return hexstringToBlob(res.data, type);
+    //   })
+    //   .catch((err) => {
+    //     return rejectWithValue(err.response.data);
+    //   });
+
     return await axios
-      .post(apiFileInfo, {
+      .get(apiFileInfo, {
         responseType: 'stream',
         headers: {
           'Content-Type': type,
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
         },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        timeout: Infinity,
       })
       .then((res) => {
         return hexstringToBlob(res.data, type);

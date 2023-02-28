@@ -6,6 +6,7 @@ import infoFileSlice from './slices/infoFile/infoFile.slice';
 import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
 import ipfsSlice from './slices/ipfs/ipfs.slice';
 import userSlice from './slices/user/user.slice';
+import tagsSlice from './slices/tags/tags.slice';
 
 const persistConfig = {
   key: 'intershare',
@@ -20,6 +21,7 @@ const rootReducer = {
   allFiles: allFilesSlice,
   user: userSlice,
   ipfs: ipfsSlice,
+  tags: tagsSlice,
 };
 
 const persistedReducer = persistReducer(

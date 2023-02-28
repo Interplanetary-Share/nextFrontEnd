@@ -16,3 +16,7 @@ export const apiUserDislike = apiHostname + userController + '/dislike/';
 export const apiUserUndislike = apiHostname + userController + '/undislike/';
 export const apiUserFavorite = apiHostname + userController + '/favorite/';
 export const apiUserUnfavorite = apiHostname + userController + '/unfavorite/';
+
+const tagsController = '/tag';
+export const apiTagCreateOrUpdate = apiHostname + tagsController + '/create/';
+export const apiTags = apiHostname + tagsController + '/tags/';

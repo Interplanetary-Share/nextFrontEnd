@@ -13,6 +13,7 @@ import {
 } from '@/app/store/slices/user/fileOptions.action';
 import { Dispatch } from '@reduxjs/toolkit';
 import { DispatchProp } from 'react-redux';
+import userNeedLogin from '../misc/userNeedLogin';
 
 interface IHandleOptions {
   id: string;
@@ -23,8 +24,7 @@ interface IHandleOptions {
 
 export const handleLike = ({ id, cid, array, dispatch }: IHandleOptions) => {
   if (!id || id === '') {
-    document.getElementById('needLogin')?.click();
-    return;
+    return userNeedLogin();
   }
 
   if (array.includes(cid)) {
@@ -54,8 +54,7 @@ export const handleLike = ({ id, cid, array, dispatch }: IHandleOptions) => {
 
 export const handleDislike = ({ id, cid, array, dispatch }: IHandleOptions) => {
   if (!id || id === '') {
-    document.getElementById('needLogin')?.click();
-    return;
+    return userNeedLogin();
   }
   if (array.includes(cid)) {
     dispatch(
@@ -89,8 +88,7 @@ export const handleFavorite = ({
   dispatch,
 }: IHandleOptions) => {
   if (!id || id === '') {
-    document.getElementById('needLogin')?.click();
-    return;
+    return userNeedLogin();
   }
   if (array.includes(cid)) {
     dispatch(
@@ -119,8 +117,7 @@ export const handleFavorite = ({
 
 export const handleReport = ({ id, cid, array, dispatch }: IHandleOptions) => {
   if (!id || id === '') {
-    document.getElementById('needLogin')?.click();
-    return;
+    return userNeedLogin();
   }
   // Verificar si ya ha reportado,  con info de reporte,
   // y info de contacto

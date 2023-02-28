@@ -1,11 +1,12 @@
 import NeedLoginModal from '../components/general/modal/needLogin';
 import UploadFile from '../components/home/uploadFile/uploadFile';
-import useAnalitics from './useAnalitics';
-import useCheckUserInfo from './useCheckUserInfo';
-import useGetFileInfo from './useGetFileInfo';
-import useGetFiles from './useGetFiles';
-import useInitIpfs from './useInitIpfs';
-import useRedirect from './useRedirect';
+import useAnalitics from './custom/useAnalitics';
+import useCheckUserInfo from './state/useCheckUserInfo';
+import useGetFileInfo from './state/useGetFileInfo';
+import useGetFiles from './state/useGetFiles';
+import useInitIpfs from './custom/useInitIpfs';
+import useRedirect from './custom/useRedirect';
+import useGetTags from './state/useGetTags';
 
 const HooksContainer = () => {
   useInitIpfs();
@@ -15,6 +16,7 @@ const HooksContainer = () => {
 
   useGetFiles();
   useGetFileInfo();
+  useGetTags();
 
   return (
     <>

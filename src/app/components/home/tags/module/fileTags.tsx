@@ -1,69 +1,38 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import Badge from '@/app/components/general/badge/badge';
-import useWindowsSize from '@/app/hooks/useWindowsSize';
+import useWindowsSize from '@/app/hooks/custom/useWindowsSize';
+import { setFiltersBasicList } from '@/app/store/slices/files/allFiles.slice';
+import numberNormalized from '@/app/utils/misc/numberNormalized';
 import { calculateTagsPerPage, ITag } from '@/app/utils/misc/tags';
-import React, { useEffect, useRef, useState } from 'react';
-
-const fileTags: Array<ITag> = [
-  {
-    id: 1,
-    name: 'action',
-    numberOfPosts: 9,
-  },
-  {
-    id: 2,
-    name: 'adventure',
-    numberOfPosts: 9,
-  },
-  {
-    id: 3,
-    numberOfPosts: 9,
-    name: 'comedy',
-  },
-  {
-    id: 4,
-    numberOfPosts: 9,
-    name: 'drama',
-  },
-  {
-    id: 5,
-    numberOfPosts: 9,
-    name: 'fantasy',
-  },
-  {
-    id: 6,
-    numberOfPosts: 9,
-    name: 'horror',
-  },
-  {
-    id: 7,
-    numberOfPosts: 9,
-    name: 'mystery',
-  },
-  {
-    id: 8,
-    numberOfPosts: 9,
-    name: 'romance',
-  },
-  {
-    id: 9,
-    numberOfPosts: 9,
-    name: 'sci-fi',
-  },
-  {
-    id: 10,
-    numberOfPosts: 9,
-    name: 'thriller',
-  },
-  {
-    id: 11,
-    numberOfPosts: 9,
-    name: 'western',
-  },
-];
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const FileTags = () => {
+  const { list } = useSelector((state: any) => state.tags);
+  const dispatch = useDispatch();
+
+  const fileTags = useMemo(() => {
+    return list.map((tag: any) => {
+      const { _id, name, numberPosts, mode } = tag;
+      return {
+        id: _id,
+        name,
+        numberPosts,
+        onClick: () => {
+          dispatch(
+            setFiltersBasicList({
+              tags: [mode],
+              mode: mode,
+              sortMode: 'likes',
+            })
+          );
+        },
+        mode,
+      };
+    });
+  }, [list]);
+
   const size = useWindowsSize();
   const tagsContainer = useRef() as React.RefObject<HTMLInputElement>;
   const [tagsPerPage, setTagsPerPage] = useState([] as Array<Array<ITag>>);
@@ -86,13 +55,14 @@ const FileTags = () => {
     return (
       <div className="carousel-item h-32 flex justify-center pt-10">
         {tags.map((tag) => {
-          const { id, name, numberOfPosts } = tag;
+          const { id, name, numberPosts, mode, onClick } = tag;
+
           return (
             <div key={id} className="indicator">
               <span className="indicator-item indicator-center badge badge-primary ">
-                {numberOfPosts}
+                {numberNormalized(numberPosts)}
               </span>
-              <Badge name={name} />
+              <Badge name={name} onClick={onClick} mode={mode} />
             </div>
           );
         })}

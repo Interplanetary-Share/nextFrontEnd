@@ -2,6 +2,7 @@ import {
   fetchAddFileToIPFS,
   fetchDownloadFromIpfs,
 } from '@/app/store/slices/ipfs/ipfs.action';
+import { fetchCreateOrUpdateTag } from '@/app/store/slices/tags/tags.action';
 import { fetchUploadFile } from '@/app/store/slices/uploadFile/uploadFile.action';
 import {
   IUploadFile,
@@ -41,6 +42,10 @@ const UploadFile = () => {
     if (!allowUpload) return toast.error('Please fill all fields');
     const windowObj = window as any;
     if (!windowObj.ipfsServer) return toast.error('IPFS server not found');
+
+    tags.map((tag) => {
+      dispatch(fetchCreateOrUpdateTag({ name: tag }) as any);
+    });
 
     dispatch(fetchUploadFile() as any)
       .unwrap()

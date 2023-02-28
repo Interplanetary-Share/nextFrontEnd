@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchInitIpfs } from '../store/slices/ipfs/ipfs.action';
-import { setAddressConnected } from '../store/slices/ipfs/ipfs.slice';
+import { fetchInitIpfs } from '../../store/slices/ipfs/ipfs.action';
+import { setAddressConnected } from '../../store/slices/ipfs/ipfs.slice';
 
 const useInitIpfs = () => {
   const dispatch = useDispatch();

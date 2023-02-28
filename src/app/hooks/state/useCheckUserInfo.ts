@@ -2,8 +2,11 @@ import React, { useMemo } from 'react';
 
 import { getAuth } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { setEmptyUserInfo, setUserInfo } from '../store/slices/user/user.slice';
-import { fetchCreateUser } from '../store/slices/user/user.action';
+import {
+  setEmptyUserInfo,
+  setUserInfo,
+} from '../../store/slices/user/user.slice';
+import { fetchCreateUser } from '../../store/slices/user/user.action';
 
 const useCheckUserInfo = () => {
   const { id, email, coverImg, displayName } = useSelector(

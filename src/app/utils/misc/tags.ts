@@ -1,7 +1,9 @@
 export interface ITag {
   id: string | number;
   name: string;
-  numberOfPosts: number;
+  numberPosts: number;
+  onClick: () => void;
+  mode: string;
 }
 
 interface ICalculateTagsPerPage {

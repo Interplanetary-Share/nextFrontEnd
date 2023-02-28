@@ -5,7 +5,7 @@ import {
   fetchCoverData,
   fetchFileData,
   fetchInfoFileFromDb,
-} from '../store/slices/infoFile/infoFile.action';
+} from '../../store/slices/infoFile/infoFile.action';
 
 const useGetFileInfo = () => {
   const { cid, found } = useSelector((state: any) => state.infoFile);

@@ -15,7 +15,6 @@ interface CardStatsProps {
   favorites?: [string];
 }
 const CardStats = ({ cid, likes, dislikes, favorites }: CardStatsProps) => {
-  console.log(`fastlog => likes:`, likes);
   const {
     id,
     likes: userLikes,

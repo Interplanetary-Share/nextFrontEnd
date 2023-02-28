@@ -7,9 +7,24 @@ import { IAllFiles, ISingleFile } from './allFiles.slice';
 export const fetchFilesFromDb = createAsyncThunk(
   'allFiles/fetchFilesFromDb',
   async (data, { rejectWithValue, getState }) => {
-    const files = await axios.get(apiFiles).then((res) => res.data);
+    const {
+      allFiles: { filters },
+      user: { id },
+    } = getState() as any;
 
-    return files;
+    const body = {
+      ...filters,
+      userId: id,
+    };
+
+    return await axios
+      .post(apiFiles, body)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return rejectWithValue(err.response.data);
+      });
   }
 );
 export const fetchFilesFromDbReducer = {

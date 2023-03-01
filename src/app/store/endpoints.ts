@@ -1,4 +1,4 @@
-const apiHostname = process.env.NEXT_PUBLIC_API_HOSTNAME;
+export const apiHostname = process.env.NEXT_PUBLIC_API_HOSTNAME;
 
 const fileController = '/file';
 export const apiFileUpload = apiHostname + fileController + '/upload/';

@@ -1,6 +1,6 @@
 import Badge from '@/app/components/general/badge/badge';
 import { setFiltersBasicList } from '@/app/store/slices/files/allFiles.slice';
-import userNeedLogin from '@/app/utils/misc/userNeedLogin';
+import { userNeedLogin } from '@/app/utils/misc/modalsToggle';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

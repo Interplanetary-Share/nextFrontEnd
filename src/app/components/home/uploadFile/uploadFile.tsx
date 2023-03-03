@@ -1,7 +1,3 @@
-import {
-  fetchAddFileToIPFS,
-  fetchDownloadFromIpfs,
-} from '@/app/store/slices/ipfs/ipfs.action';
 import { fetchCreateOrUpdateTag } from '@/app/store/slices/tags/tags.action';
 import { fetchUploadFile } from '@/app/store/slices/uploadFile/uploadFile.action';
 import {
@@ -38,46 +34,27 @@ const UploadFile = () => {
     }
   }, [name, description, tags, nativeFile]);
 
-  const handleUploadFile = () => {
+  const handleUploadFile = async () => {
     if (!allowUpload) return toast.error('Please fill all fields');
-    const windowObj = window as any;
-    if (!windowObj.ipfsServer) return toast.error('IPFS server not found');
 
     tags.map((tag) => {
       dispatch(fetchCreateOrUpdateTag({ name: tag }) as any);
     });
+    toast.info('Uploading file to IPFS network...', {
+      toastId: 'uploadingFile',
+      autoClose: false,
+    });
+    const file = await dispatch(fetchUploadFile() as any).unwrap();
+    toast.update('uploadingFile', {
+      render: 'File uploaded successfully, distribution in progres...',
+      type: toast.TYPE.SUCCESS,
+      autoClose: false,
+    });
 
-    dispatch(fetchUploadFile() as any)
-      .unwrap()
-      .then(() => {
-        dispatch(setEmptyFileInfo());
-      });
+    dispatch(setEmptyFileInfo());
 
-    dispatch(fetchAddFileToIPFS({ file: nativeFile.file }) as any)
-      .unwrap()
-      .then(() => {
-        toast.success('File uploaded successfully, distribution in progres...');
-        // dispatch(fetchAddFileToIPFS({ file: nativeFile.cover }) as any)
-        //   .unwrap()
-        //   .then(() => {
-        //     toast.success(
-        //       'Cover uploaded successfully, distribution in progres...'
-        //     );
-        //   });
-
-        toast.info('Distributing file to IPFS network in Background...');
-        dispatch(fetchDownloadFromIpfs() as any)
-          .unwrap()
-          .then((resfetchDownloadFromIpfs: any) => {
-            console.log(
-              `fastlog => resfetchDownloadFromIpfs:`,
-              resfetchDownloadFromIpfs
-            );
-
-            // router.push('/');
-            toast.success('File distributed successfully! Downloading file...');
-          });
-      });
+    router.push('/' + file.cid);
+    document.getElementById('opnUploadFileModal')?.click();
   };
 
   return (

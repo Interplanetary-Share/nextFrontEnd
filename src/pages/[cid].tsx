@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Container from '@/app/components/general/containers/container';
+import Comments from '@/app/components/infoPage/comments/comments';
+import UserComments from '@/app/components/infoPage/comments/userComments';
 import FileDatils from '@/app/components/infoPage/fileDetails/fileDatils';
 import FileOptions from '@/app/components/infoPage/fileOptions/fileOptions';
 import { setCidFile } from '@/app/store/slices/infoFile/infoFile.slice';
@@ -24,6 +26,8 @@ const InfoPage = () => {
         <>
           <FileDatils />
           <FileOptions />
+          <Comments />
+          <UserComments />
         </>
       ) : (
         <div className="w-full mx-auto pt-8">

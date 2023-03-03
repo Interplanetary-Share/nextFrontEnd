@@ -12,13 +12,13 @@ const FileDatils = () => {
   const iconDivider = hideDetails ? '🙈' : '🙉';
 
   const detailsClass = hideDetails
-    ? 'w-0 opacity-0'
-    : 'grid h-full w-96 card bg-base-300 rounded-box place-items-center px-4 mx-4 pb-4 mb-4';
+    ? 'w-0 h-0 opacity-0'
+    : 'grid h-full w-full md:w-96 card bg-base-300 rounded-box place-items-center px-2 mx-2 pb-4 mb-4';
 
   return (
     <>
       <div className="mt-8 "></div>
-      <div className="flex w-full px-4 mx-4">
+      <div className="flex flex-col md:flex-row  md:flex w-full px-2 mx-2">
         <div className="grid h-full flex-grow card bg-base-300 rounded-box place-items-center py-4">
           <h1 className="text-2xl font-bold py-4">{name}</h1>
           <p className="text-lg mb-2 py-1 text-left w-full px-4">
@@ -26,7 +26,7 @@ const FileDatils = () => {
           </p>
           <WrapperFileType type={type} src={link} width="100%" />
         </div>
-        <div className="divider divider-horizontal text-3xl">
+        <div className="divider divider-horizontal text-3xl text-center w-full md:w-16">
           <button onClick={() => setHideDetails(!hideDetails)}>
             {iconDivider}
           </button>

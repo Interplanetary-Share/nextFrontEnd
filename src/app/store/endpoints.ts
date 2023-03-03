@@ -20,3 +20,12 @@ export const apiUserUnfavorite = apiHostname + userController + '/unfavorite/';
 const tagsController = '/tag';
 export const apiTagCreateOrUpdate = apiHostname + tagsController + '/create/';
 export const apiTags = apiHostname + tagsController + '/tags/';
+
+const commentController = '/comment';
+export const apiCommentCreate = apiHostname + commentController + '/create/';
+export const apiCommentGet = apiHostname + commentController + '/get/';
+export const apiCommentDelete = apiHostname + commentController + '/delete/';
+
+const reportController = '/report';
+export const apiReportCreate = apiHostname + reportController + '/create/';
+export const apiReportDelete = apiHostname + reportController + '/delete/';

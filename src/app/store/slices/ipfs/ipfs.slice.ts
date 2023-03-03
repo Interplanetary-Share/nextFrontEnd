@@ -1,9 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  fetchAddFileToIPFSReducer,
-  fetchDownloadFromIpfsReducer,
-  fetchInitIpfsReducer,
-} from './ipfs.action';
 
 export interface IIpfs {
   info: {
@@ -11,18 +6,18 @@ export interface IIpfs {
     file: any;
     addressConnected: [string] | [];
   };
-  fetchAddFileToIPFS: {
-    loading: boolean;
-    error: string;
-  };
-  fetchInitIpfs: {
-    loading: boolean;
-    error: string;
-  };
-  fetchDownloadFromIpfs: {
-    loading: boolean;
-    error: string;
-  };
+  // fetchAddFileToIPFS: {
+  //   loading: boolean;
+  //   error: string;
+  // };
+  // fetchInitIpfs: {
+  //   loading: boolean;
+  //   error: string;
+  // };
+  // fetchDownloadFromIpfs: {
+  //   loading: boolean;
+  //   error: string;
+  // };
 }
 
 const initialState: IIpfs = {
@@ -31,18 +26,18 @@ const initialState: IIpfs = {
     file: undefined,
     addressConnected: [],
   },
-  fetchAddFileToIPFS: {
-    loading: false,
-    error: '',
-  },
-  fetchInitIpfs: {
-    loading: false,
-    error: '',
-  },
-  fetchDownloadFromIpfs: {
-    loading: false,
-    error: '',
-  },
+  // fetchAddFileToIPFS: {
+  //   loading: false,
+  //   error: '',
+  // },
+  // fetchInitIpfs: {
+  //   loading: false,
+  //   error: '',
+  // },
+  // fetchDownloadFromIpfs: {
+  //   loading: false,
+  //   error: '',
+  // },
 };
 
 const ipfsSlice = createSlice({
@@ -54,9 +49,9 @@ const ipfsSlice = createSlice({
     },
   },
   extraReducers: {
-    ...fetchAddFileToIPFSReducer,
-    ...fetchInitIpfsReducer,
-    ...fetchDownloadFromIpfsReducer,
+    // ...fetchAddFileToIPFSReducer,
+    // ...fetchInitIpfsReducer,
+    // ...fetchDownloadFromIpfsReducer,
   },
 });
 

@@ -7,6 +7,10 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <script src="https://cdn.jsdelivr.net/npm/ipfs-core/dist/index.min.js"></script>
+          <script
+            src="https://cdn.tiny.cloud/1/4ge8itj7zovsnq0e89lw5enf1fudbp3nyiin4xdch5zmnzjq/tinymce/5/tinymce.min.js"
+            referrerPolicy="origin"
+          ></script>
         </Head>
         <body>
           <Main />

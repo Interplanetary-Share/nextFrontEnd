@@ -103,35 +103,28 @@ export const fetchInfoFileFromDbReducer = {
 export const fetchDownloadFile = createAsyncThunk(
   'infoFile/fetchDownloadFile',
   async (data: any, { rejectWithValue, getState }) => {
-    return true;
-    // const { cid, type } = data;
-    // const apiFileInfo = apiDownload + cid;
+    const { link, type, name } = data;
+    // download file from blob
 
-    // if (!cid || cid === '') return rejectWithValue('CID is empty');
+    if (!link || link === '') return rejectWithValue('Link is empty');
 
-    // return await axios
-    //   .post(apiFileInfo, {
-    //     responseType: 'stream',
-    //     headers: {
-    //       'Content-Type': type,
-    //       'Access-Control-Allow-Origin': '*',
-    //       'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-    //     },
-    //   })
-    //   .then((res) => {
-    //     const href = type
-    //       ? hexstringToBlob(res.data, type)
-    //       : hexstringToBlob(res.data);
-    //     const link = document.createElement('a');
-    //     link.href = href;
-    //     link.download = cid;
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //   })
-    //   .catch((err) => {
-    //     return rejectWithValue(err.response.data);
-    //   });
+    return await axios
+      .get(link, {
+        responseType: 'blob',
+      })
+      .then((res) => {
+        // download file
+        const blob = new Blob([res.data], { type: type });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        // download
+        document.body.appendChild(link);
+        link.setAttribute('style', 'display: none');
+        link.setAttribute('download', name);
+        link.click();
+        link.remove();
+      });
   }
 );
 export const fetchDownloadFileReducer = {
@@ -197,102 +190,3 @@ export const fetchStatsCurrentFileReducer = {
     state.fetchStatsCurrentFile.error = action.error.message;
   },
 };
-
-// export const fetchFileData = createAsyncThunk(
-//   'infoFile/fetchFileData',
-//   async (data, { rejectWithValue, getState }) => {
-//     const { infoFile } = getState() as any;
-//     const { cid, type } = infoFile;
-//     const apiFileInfo = apiDownload + cid;
-
-//     if (!cid || cid === '') return rejectWithValue('CID is empty');
-
-//     // return await axios
-//     //   .post(apiFileInfo, {
-//     //     responseType: 'stream',
-//     //     headers: {
-//     //       'Content-Type': type,
-//     //       'Access-Control-Allow-Origin': '*',
-//     //       'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-//     //     },
-//     //   })
-//     //   .then((res) => {
-//     //     return hexstringToBlob(res.data, type);
-//     //   })
-//     //   .catch((err) => {
-//     //     return rejectWithValue(err.response.data);
-//     //   });
-
-//     return await axios
-//       .get(apiFileInfo, {
-//         responseType: 'stream',
-//         headers: {
-//           'Content-Type': type,
-//           'Access-Control-Allow-Origin': '*',
-//           'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-//         },
-//         maxContentLength: Infinity,
-//         maxBodyLength: Infinity,
-//         timeout: Infinity,
-//       })
-//       .then((res) => {
-//         return hexstringToBlob(res.data, type);
-//       })
-//       .catch((err) => {
-//         return rejectWithValue(err.response.data);
-//       });
-//   }
-// );
-// export const fetchFileDataReducer = {
-//   [fetchFileData.pending as any]: (state: IInfoFile) => {
-//     state.fetchFileData.loading = true;
-//   },
-//   [fetchFileData.fulfilled as any]: (state: IInfoFile, action: any) => {
-//     state.found = true;
-//     state.link = action.payload;
-//     state.fetchFileData.loading = false;
-//   },
-//   [fetchFileData.rejected as any]: (state: IInfoFile, action: any) => {
-//     state.fetchFileData.loading = false;
-//     state.fetchFileData.error = action.error.message;
-//   },
-// };
-
-// export const fetchCoverData = createAsyncThunk(
-//   'infoFile/fetchCoverData',
-//   async (data, { rejectWithValue, getState }) => {
-//     const { infoFile } = getState() as any;
-//     const { cover } = infoFile;
-//     const apiFileInfo = apiDownload + cover;
-
-//     if (!cover || cover === '') return rejectWithValue('cover is empty');
-
-//     return await axios
-//       .post(apiFileInfo, {
-//         responseType: 'stream',
-//         headers: {
-//           'Access-Control-Allow-Origin': '*',
-//           'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-//         },
-//       })
-//       .then((res) => {
-//         return hexstringToBlob(res.data);
-//       })
-//       .catch((err) => {
-//         return rejectWithValue(err.response.data);
-//       });
-//   }
-// );
-// export const fetchCoverDataReducer = {
-//   [fetchCoverData.pending as any]: (state: IInfoFile) => {
-//     state.fetchCoverData.loading = true;
-//   },
-//   [fetchCoverData.fulfilled as any]: (state: IInfoFile, action: any) => {
-//     state.coverLink = action.payload;
-//     state.fetchCoverData.loading = false;
-//   },
-//   [fetchCoverData.rejected as any]: (state: IInfoFile, action: any) => {
-//     state.fetchCoverData.loading = false;
-//     state.fetchCoverData.error = action.error.message;
-//   },
-// };

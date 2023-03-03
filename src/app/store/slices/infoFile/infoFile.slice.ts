@@ -1,11 +1,49 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchCoverDataReducer,
   fetchDownloadFileReducer,
-  fetchFileDataReducer,
   fetchInfoFileFromDbReducer,
   fetchStatsCurrentFileReducer,
 } from './infoFile.action';
+import {
+  fetchCreateCommentReducer,
+  fetchDeleteCommentReducer,
+  fetchGetCommentsReducer,
+} from './infoFileComments.action';
+import {
+  fetchCreateOrUpdateReportReducer,
+  fetchDeleteReportReducer,
+} from './infoFileReports.action';
+
+export interface IComments {
+  _id: string;
+  userId: string;
+  comment: string;
+  date: string;
+  likes: string[];
+  dislikes: string[];
+  reports: string[];
+  coverImg: string;
+  displayName: string;
+}
+interface ILikes {
+  userId: string;
+  date: string;
+}
+interface IDislikes {
+  userId: string;
+  date: string;
+}
+interface IFavorites {
+  userId: string;
+  date: string;
+}
+interface IReports {
+  _id: string;
+  userId: string;
+  date: string;
+  reasons: Array<string>;
+  comments: string;
+}
 
 export interface IInfoFile {
   cid: string;
@@ -26,16 +64,15 @@ export interface IInfoFile {
   likes: string[];
   dislikes: string[];
   favorites: string[];
-  reports: string[];
+
+  reports: IReports[];
+
+  comments: IComments[];
 
   owner: string;
 
   found: boolean;
 
-  // fetchInfoFileRemotely: {
-  //   loading: boolean;
-  //   error: string;
-  // };
   fetchInfoFileFromDb: {
     loading: boolean;
     error: string;
@@ -53,6 +90,26 @@ export interface IInfoFile {
     error: string;
   };
   fetchCoverData: {
+    loading: boolean;
+    error: string;
+  };
+  fetchCreateComment: {
+    loading: boolean;
+    error: string;
+  };
+  fetchDeleteComment: {
+    loading: boolean;
+    error: string;
+  };
+  fetchGetComments: {
+    loading: boolean;
+    error: string;
+  };
+  fetchCreateOrUpdateReport: {
+    loading: boolean;
+    error: string;
+  };
+  fetchDeleteReport: {
     loading: boolean;
     error: string;
   };
@@ -77,13 +134,11 @@ const initialState: IInfoFile = {
   dislikes: [],
   favorites: [],
   reports: [],
+  comments: [],
   owner: '',
 
   found: true,
-  // fetchInfoFileRemotely: {
-  //   loading: false,
-  //   error: '',
-  // },
+
   fetchInfoFileFromDb: {
     loading: false,
     error: '',
@@ -101,6 +156,26 @@ const initialState: IInfoFile = {
     error: '',
   },
   fetchCoverData: {
+    loading: false,
+    error: '',
+  },
+  fetchCreateComment: {
+    loading: false,
+    error: '',
+  },
+  fetchDeleteComment: {
+    loading: false,
+    error: '',
+  },
+  fetchGetComments: {
+    loading: false,
+    error: '',
+  },
+  fetchCreateOrUpdateReport: {
+    loading: false,
+    error: '',
+  },
+  fetchDeleteReport: {
     loading: false,
     error: '',
   },
@@ -124,12 +199,16 @@ const infoFileSlice = createSlice({
     },
   },
   extraReducers: {
-    // ...fetchInfoFileRemotelyReducer,
     ...fetchInfoFileFromDbReducer,
     ...fetchDownloadFileReducer,
-    // ...fetchFileDataReducer,
-    // ...fetchCoverDataReducer,
     ...fetchStatsCurrentFileReducer,
+
+    ...fetchCreateCommentReducer,
+    ...fetchDeleteCommentReducer,
+    ...fetchGetCommentsReducer,
+
+    ...fetchCreateOrUpdateReportReducer,
+    ...fetchDeleteReportReducer,
   },
 });
 

@@ -5,13 +5,14 @@ import {
   handleFavorite,
   handleLike,
   handleReport,
+  handleShareFile,
 } from '@/app/utils/fileOptions/handleOptions';
 import { useDispatch, useSelector } from 'react-redux';
 import CardStats from '../../home/files/module/cardStats';
 
 const FileOptions = () => {
   const { id, reports } = useSelector((state: any) => state.user);
-  const { cid, type, likes, dislikes, favorites } = useSelector(
+  const { cid, type, likes, dislikes, favorites, name, link } = useSelector(
     (state: any) => state.infoFile
   );
   const dispatch = useDispatch();
@@ -25,8 +26,8 @@ const FileOptions = () => {
   };
 
   return (
-    <div className="flex gap-9 w-2/3">
-      <div className="w-96">
+    <div className="grid justify-center grid-cols-1 gap-9 w-full  md:w-2/3 md:flex">
+      <div className="w-full md:w-96">
         <CardStats
           cid={cid}
           likes={likes}
@@ -34,8 +35,17 @@ const FileOptions = () => {
           favorites={favorites}
         />
       </div>
-      <div className="btn-group  mt-10 w-full mx-auto justify-end">
-        <div className="tooltip btn" data-tip="Share link">
+      <div className="btn-group my-4  md:mt-10 w-full mx-auto justify-center md:justify-end">
+        <div
+          onClick={() =>
+            handleShareFile({
+              cid,
+              name,
+            })
+          }
+          className="tooltip btn"
+          data-tip="Share link"
+        >
           <a className="text-3xl">🔗</a>
         </div>
 
@@ -43,7 +53,8 @@ const FileOptions = () => {
           <a
             onClick={() => {
               handleDownload({
-                cid,
+                name,
+                link,
                 type,
                 dispatch,
               });
@@ -58,9 +69,8 @@ const FileOptions = () => {
           className={buttonClassName(reports)}
           onClick={() => {
             handleReport({
-              id,
               cid,
-              array: reports,
+              id,
               dispatch,
             });
           }}

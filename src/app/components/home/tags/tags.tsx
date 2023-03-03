@@ -1,26 +1,20 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import DefaultTags from './module/defaultTags';
 import FileTags from './module/fileTags';
 
 const Tags = () => {
+  const { filters } = useSelector((state: any) => state.allFiles);
+
   return (
     <>
       <div className="navbar bg-base-100">
-        <div className="flex-1">
+        <div className="grid grid-cols-1  w-full md:flex-1 md:flex justify-center">
           <DefaultTags />
-          <FileTags />
         </div>
-        <div className="flex-none">
-          <div className="form-control w-full max-w-xs">
-            <select className="select select-bordered">
-              <option defaultChecked>Today</option>
-              <option>Yesterday</option>
-              <option>This week</option>
-              <option>This month</option>
-              <option>This year</option>
-            </select>
-          </div>
-        </div>
+      </div>
+      <div className="flex">
+        <FileTags />
       </div>
     </>
   );

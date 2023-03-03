@@ -28,6 +28,7 @@ export interface IAllFiles {
     type: string;
     tags: Array<string>;
     sortMode: string;
+    searchStr: string;
   };
   fetchFilesFromDb: {
     loading: boolean;
@@ -47,6 +48,7 @@ const initialState: IAllFiles = {
     type: '', // 'all', 'image', 'video', 'audio', 'document', 'archive', 'other' // diabled
     tags: [],
     sortMode: 'likes',
+    searchStr: '',
   },
   fetchFilesFromDb: {
     loading: false,
@@ -66,12 +68,13 @@ const allFilesSlice = createSlice({
       state.filters = initialState.filters;
     },
     setFiltersBasicList(state, action) {
-      const { mode, period, type, tags, sortMode } = action.payload;
+      const { mode, period, type, tags, sortMode, searchStr } = action.payload;
       if (mode) state.filters.mode = mode;
       if (period) state.filters.period = period;
       if (type) state.filters.type = type;
       if (tags) state.filters.tags = tags;
       if (sortMode) state.filters.sortMode = sortMode;
+      state.filters.searchStr = searchStr;
     },
   },
   extraReducers: {

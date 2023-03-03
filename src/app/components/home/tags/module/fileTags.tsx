@@ -13,24 +13,26 @@ const FileTags = () => {
   const dispatch = useDispatch();
 
   const fileTags = useMemo(() => {
-    return list.map((tag: any) => {
-      const { _id, name, numberPosts, mode } = tag;
-      return {
-        id: _id,
-        name,
-        numberPosts,
-        onClick: () => {
-          dispatch(
-            setFiltersBasicList({
-              tags: [mode],
-              mode: mode,
-              sortMode: 'likes',
-            })
-          );
-        },
-        mode,
-      };
-    });
+    return list
+      .map((tag: any) => {
+        const { _id, name, numberPosts, mode } = tag;
+        return {
+          id: _id,
+          name,
+          numberPosts,
+          onClick: () => {
+            dispatch(
+              setFiltersBasicList({
+                tags: [mode],
+                mode: mode,
+                sortMode: 'likes',
+              })
+            );
+          },
+          mode,
+        };
+      })
+      .sort((a, b) => b.numberPosts - a.numberPosts);
   }, [list]);
 
   const size = useWindowsSize();
@@ -74,13 +76,13 @@ const FileTags = () => {
     <>
       <div
         ref={tagsContainer}
-        className="h-32 carousel carousel-vertical rounded-box w-full mx-auto"
+        className="grid h-72 md:h-32 carousel carousel-vertical rounded-box w-full mx-auto"
       >
         {tagsPerPage.map((tags, index) => {
           return <CustomBadge key={index} tags={tags} />;
         })}
       </div>
-      <div className="grid grid-cols-1 mx-4">
+      <div className="grid grid-cols-1 mx-4 ">
         <div className="flex justify-center">
           <kbd className="kbd">▲</kbd>
         </div>

@@ -45,10 +45,15 @@ const Card = ({
         }}
         className="h-72 px-4"
       >
-        <CardOptionsUpper />
+        <CardOptionsUpper
+          cid={cid}
+          name={name}
+          type={type}
+          // link={link}
+        />
       </div>
       <div className="card-body">
-        <h2 className="card-title">{name}</h2>
+        <h2 className="card-title overflow-hidden">{name}</h2>
         <p>{description}</p>
         <CardStats
           cid={cid}

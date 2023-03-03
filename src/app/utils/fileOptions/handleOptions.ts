@@ -12,8 +12,11 @@ import {
   fetchUnlikeNewFile,
 } from '@/app/store/slices/user/fileOptions.action';
 import { Dispatch } from '@reduxjs/toolkit';
-import { DispatchProp } from 'react-redux';
-import userNeedLogin from '../misc/userNeedLogin';
+import {
+  reportFileModal,
+  shareFileModal,
+  userNeedLogin,
+} from '../misc/modalsToggle';
 
 interface IHandleOptions {
   id: string;
@@ -115,10 +118,27 @@ export const handleFavorite = ({
   }
 };
 
-export const handleReport = ({ id, cid, array, dispatch }: IHandleOptions) => {
+interface IHandleReport {
+  cid: string;
+  id: string; // user id
+
+  dispatch: Dispatch;
+}
+
+export const handleReport = ({
+  cid,
+  id,
+
+  dispatch,
+}: IHandleReport) => {
   if (!id || id === '') {
     return userNeedLogin();
   }
+  reportFileModal({ cid, name: 'name' });
+
+  // comments: string;
+  // reasons: string[];
+
   // Verificar si ya ha reportado,  con info de reporte,
   // y info de contacto
   // crear un modal para crear nuevo reporte. con info de reporte
@@ -132,17 +152,37 @@ export const handleReport = ({ id, cid, array, dispatch }: IHandleOptions) => {
   // }
 };
 
-interface IHandleDownload {
+interface IHandleShare {
   cid: string;
-  type: string;
+  name: string;
+}
+
+export const handleShareFile = ({ cid, name }: IHandleShare) => {
+  return shareFileModal({
+    cid,
+    name,
+  });
+};
+
+interface IHandleDownload {
+  link: string; //blob link
+  type: string; //file type
+  name: string; //file name
   dispatch: Dispatch;
 }
 
-export const handleDownload = ({ cid, type, dispatch }: IHandleDownload) => {
+export const handleDownload = ({
+  link,
+  type,
+  name,
+  dispatch,
+}: IHandleDownload) => {
+  // We need link, name and type.
   dispatch(
     fetchDownloadFile({
-      cid,
+      link,
       type,
+      name,
     }) as any
   );
 };

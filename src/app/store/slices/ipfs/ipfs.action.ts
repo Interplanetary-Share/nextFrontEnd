@@ -28,8 +28,9 @@ export const fetchAddFileToIPFS = createAsyncThunk(
     // const stream = file.stream().tee();
     const stream = file.stream();
 
-    toast.info('Uploading file to local IPFS...', {
+    toast.info('Saving file to local IPFS...', {
       toastId: 'uploadingFileToIPFS',
+      autoClose: 3000,
     });
 
     const infoFile = await ipfs.add(stream, {
@@ -308,7 +309,6 @@ export const fetchGetFileFromIPFS = createAsyncThunk(
       fileBlobList.length = 0;
       chunkSize = 0;
     }, 100);
-    console.timeEnd('ipfsGet');
     return href;
   }
 );

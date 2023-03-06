@@ -39,7 +39,11 @@ const useGetFileInfo = () => {
           .then((res: any) => {
             console.log(`fastlog => res:`, res);
             if (res) {
+              // file is on local ipfs node
               dispatch(fetchGetFileFromIPFS() as any);
+            }else{
+              // file is not on local ipfs node
+              // the hook will be launched. 
             }
           });
       }

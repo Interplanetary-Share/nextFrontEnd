@@ -29,3 +29,6 @@ export const apiCommentDelete = apiHostname + commentController + '/delete/';
 const reportController = '/report';
 export const apiReportCreate = apiHostname + reportController + '/create/';
 export const apiReportDelete = apiHostname + reportController + '/delete/';
+
+
+export const defaultGateway = apiHostname+ fileController + '/get/';

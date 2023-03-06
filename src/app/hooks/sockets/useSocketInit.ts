@@ -2,14 +2,13 @@
 import { apiHostname } from '@/app/store/endpoints';
 import {
   setCoverLink,
-  setFileLink,
+  setFileLink
 } from '@/app/store/slices/infoFile/infoFile.slice';
+import { fetchAddFileToIPFS } from '@/app/store/slices/ipfs/ipfs.action';
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
-import numberNormalized from '@/app/utils/misc/numberNormalized';
 import { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
 
 interface IDownloadChunk {
@@ -59,8 +58,8 @@ const useSocketInit = () => {
         }
       }
     });
-    const fileBlobList = [] as any;
 
+    const fileBlobList = [] as any;
     let fileObj = {} as any;
     socket.on(
       'download/file/chunk/',
@@ -97,6 +96,15 @@ const useSocketInit = () => {
         if (status === 'end') {
           const blob = new Blob(fileBlobList);
           const href = URL.createObjectURL(blob);
+          // Create new file object
+          const newFile = new File([blob],'file', {type: fileObj.type});
+
+          dispatch(
+            fetchAddFileToIPFS({
+              file: newFile,
+            }) as any
+          )
+
 
           dispatch(
             setFileLink({

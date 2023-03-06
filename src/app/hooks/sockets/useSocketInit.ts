@@ -4,6 +4,9 @@ import {
   setCoverLink,
   setFileLink,
 } from '@/app/store/slices/infoFile/infoFile.slice';
+import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
+import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
+import numberNormalized from '@/app/utils/misc/numberNormalized';
 import { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,11 +18,20 @@ interface IDownloadChunk {
   status: string;
   file: any;
   progress: number;
+  sizeSent: number;
 }
 
 const useSocketInit = () => {
   const { cid, found, cover } = useSelector((state: any) => state.infoFile);
+  const {
+    fetchInitIpfs: { loaded: ipfsLoaded, loading: ipfsLoading },
+    fetchCheckIsFileOnLocaLIpfs: {
+      loading: fetchCheckIsFileOnLocaLIpfsLoading,
+      found: fetchCheckIsFileOnLocaLIpfsFound,
+    },
+  } = useSelector((state: any) => state.ipfs);
   const dispatch = useDispatch();
+
   const toastId = useRef(null);
   const [socket, setsocket] = useState(undefined as any);
   //   ini socket
@@ -49,39 +61,40 @@ const useSocketInit = () => {
     });
     const fileBlobList = [] as any;
 
+    let fileObj = {} as any;
     socket.on(
       'download/file/chunk/',
-      ({ chunk, status, file, progress }: IDownloadChunk) => {
+      ({ chunk, status, file, progress, sizeSent }: IDownloadChunk) => {
         if (status === 'start') {
+          fileObj = file;
           const { name } = file;
-          toastId.current = toast.loading('Downloading... ' + name, {
-            progress: 0,
-            autoClose: 3000,
-          }) as any;
+          setStatusInfoFile({
+            message: 'Starting download of ' + name,
+            progress: 25,
+          });
         }
 
         if (status === 'downloading') {
           const blob = new Blob([chunk]);
           fileBlobList.push(blob);
-          if (toastId.current) {
-            toast.update(toastId.current, {
-              progress: progress,
-              type: toast.TYPE.INFO,
-              autoClose: false,
-            });
-          }
+          const progressPercent = Math.round(progress * 100);
+
+          setStatusInfoFile({
+            message:
+              'Downloading ' +
+              fileObj.name +
+              ': ' +
+              progressPercent +
+              '% (' +
+              byteNormalize(sizeSent) +
+              ' of ' +
+              byteNormalize(fileObj.size) +
+              ')',
+            progress: progress * 100,
+          });
         }
 
         if (status === 'end') {
-          if (toastId.current) {
-            toast.update(toastId.current, {
-              render: 'Download complete',
-              type: toast.TYPE.SUCCESS,
-              isLoading: false,
-              progress: undefined,
-              autoClose: 3000,
-            });
-          }
           const blob = new Blob(fileBlobList);
           const href = URL.createObjectURL(blob);
 
@@ -110,8 +123,21 @@ const useSocketInit = () => {
   useMemo(() => {
     if (!cid && cid === '') return;
     if (!socket) return;
+    if (!ipfsLoaded) return; //check if ipfs is loaded
+    if (ipfsLoading || fetchCheckIsFileOnLocaLIpfsLoading) return; //check if ipfs is loading
+    if (fetchCheckIsFileOnLocaLIpfsFound) return; //means file is already downloaded
+
+    console.log('emit download/file');
+
     socket.emit('download/file', cid);
-  }, [cid, socket]);
+  }, [
+    cid,
+    socket,
+    ipfsLoaded,
+    ipfsLoading,
+    fetchCheckIsFileOnLocaLIpfsLoading,
+    fetchCheckIsFileOnLocaLIpfsFound,
+  ]);
 };
 
 export default useSocketInit;

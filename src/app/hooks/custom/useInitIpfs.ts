@@ -1,3 +1,4 @@
+import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchInitIpfs } from '../../store/slices/ipfs/ipfs.action';
@@ -6,7 +7,10 @@ import { setAddressConnected } from '../../store/slices/ipfs/ipfs.slice';
 const useInitIpfs = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('Init IPFS');
+    setStatusInfoFile({
+      message: 'Connecting to Local IPFS node',
+      progress: 10,
+    });
 
     setInterval(() => {
       const windowObj = window as any;
@@ -26,12 +30,20 @@ const useInitIpfs = () => {
       }
     }, 3000);
 
-    dispatch(fetchInitIpfs() as any);
+    dispatch(fetchInitIpfs() as any)
+      .unwrap()
+      .then((res: any) => {
+        setStatusInfoFile({
+          message: 'Local IPFS node ready',
+          progress: 15,
+        });
+      });
     return () => {
       console.log('Closing IPFS');
       const windowObj = window as any;
       if (windowObj.ipfsServer) {
-        windowObj.ipfsServer.close();
+        // windowObj.ipfsServer.close();
+        windowObj.ipfsServer.stop();
       }
     };
   }, []);

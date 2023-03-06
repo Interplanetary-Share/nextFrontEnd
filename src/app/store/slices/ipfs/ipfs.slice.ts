@@ -1,4 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {
+  fetchAddFileToIPFSReducer,
+  fetchCheckIsFileOnLocaLIpfsReducer,
+  fetchGetFileFromIPFSReducer,
+  fetchInitIpfsReducer,
+} from './ipfs.action';
 
 export interface IIpfs {
   info: {
@@ -6,14 +12,24 @@ export interface IIpfs {
     file: any;
     addressConnected: [string] | [];
   };
-  // fetchAddFileToIPFS: {
-  //   loading: boolean;
-  //   error: string;
-  // };
-  // fetchInitIpfs: {
-  //   loading: boolean;
-  //   error: string;
-  // };
+  fetchAddFileToIPFS: {
+    loading: boolean;
+    error: string;
+  };
+  fetchInitIpfs: {
+    loading: boolean;
+    loaded: boolean;
+    error: string;
+  };
+  fetchGetFileFromIPFS: {
+    loading: boolean;
+    error: string;
+  };
+  fetchCheckIsFileOnLocaLIpfs: {
+    loading: boolean;
+    found: boolean;
+    error: string;
+  };
   // fetchDownloadFromIpfs: {
   //   loading: boolean;
   //   error: string;
@@ -26,14 +42,24 @@ const initialState: IIpfs = {
     file: undefined,
     addressConnected: [],
   },
-  // fetchAddFileToIPFS: {
-  //   loading: false,
-  //   error: '',
-  // },
-  // fetchInitIpfs: {
-  //   loading: false,
-  //   error: '',
-  // },
+  fetchAddFileToIPFS: {
+    loading: false,
+    error: '',
+  },
+  fetchInitIpfs: {
+    loading: false,
+    loaded: false,
+    error: '',
+  },
+  fetchGetFileFromIPFS: {
+    loading: false,
+    error: '',
+  },
+  fetchCheckIsFileOnLocaLIpfs: {
+    loading: false,
+    found: false,
+    error: '',
+  },
   // fetchDownloadFromIpfs: {
   //   loading: false,
   //   error: '',
@@ -49,8 +75,10 @@ const ipfsSlice = createSlice({
     },
   },
   extraReducers: {
-    // ...fetchAddFileToIPFSReducer,
-    // ...fetchInitIpfsReducer,
+    ...fetchAddFileToIPFSReducer,
+    ...fetchInitIpfsReducer,
+    ...fetchGetFileFromIPFSReducer,
+    ...fetchCheckIsFileOnLocaLIpfsReducer,
     // ...fetchDownloadFromIpfsReducer,
   },
 });

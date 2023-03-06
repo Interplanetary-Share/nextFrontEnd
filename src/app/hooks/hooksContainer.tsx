@@ -12,7 +12,7 @@ import useGetFiles from './state/useGetFiles';
 import useGetTags from './state/useGetTags';
 
 const HooksContainer = () => {
-  // useInitIpfs(); //DISABLED FOR NOW
+  useInitIpfs(); //DISABLED FOR NOW
   useAnalitics();
   useRedirect();
   useCheckUserInfo();

@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
+import { useState, useEffect} from 'react';
+import { useSelector  } from 'react-redux';
 import CardOptionsUpper from './cardOptionsUpper';
 import CardStats from './cardStats';
 
@@ -34,7 +35,36 @@ const Card = ({
   reports,
   favorites,
 }: CardProps) => {
-  const image = cover ? getIpfsGateway(cover) : '/home/space.gif';
+
+  const { urlList } = useSelector((state: any) => state.socket);
+
+
+  // const image = cover ? getIpfsGateway(cover) : '/home/space.gif'; //ESTO TRAE LA IMAGEN DE IPFS 
+
+  // LA IDEA ES EMIT DESCARGA DE LA IMAGEN Y QUE SE MUESTRE EN LA CARD CUANDO ESTE LISTA
+
+  const [image, setImage] = useState( '/home/space.gif');
+
+ useEffect(() => {
+  if(!window) return;
+
+  const windowObj = window as any;
+  const socket = windowObj.socketIo;
+
+  socket.emit('download', cover);
+
+ }, []);
+
+
+ 
+
+  useEffect(() => {
+    const url = urlList.find((url: any) => url.cid === cover) 
+    setImage(url);
+
+  }, [urlList]);
+
+
 
   return (
     <div className="card card-compact bg-secondary shadow-xl">

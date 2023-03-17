@@ -7,6 +7,7 @@ import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
 import ipfsSlice from './slices/ipfs/ipfs.slice';
 import userSlice from './slices/user/user.slice';
 import tagsSlice from './slices/tags/tags.slice';
+import socketSlice from './slices/socket/socket.slice';
 
 const persistConfig = {
   key: 'intershare',
@@ -22,6 +23,7 @@ const rootReducer = {
   user: userSlice,
   ipfs: ipfsSlice,
   tags: tagsSlice,
+  socket: socketSlice,
 };
 
 const persistedReducer = persistReducer(

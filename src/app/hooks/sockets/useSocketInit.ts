@@ -5,9 +5,10 @@ import {
   setFileLink
 } from '@/app/store/slices/infoFile/infoFile.slice';
 import { fetchAddFileToIPFS } from '@/app/store/slices/ipfs/ipfs.action';
+import { setAddBlobChunk, setNewFileBlob } from '@/app/store/slices/socket/socket.slice';
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 
@@ -34,118 +35,68 @@ const useSocketInit = () => {
   const toastId = useRef(null);
   const [socket, setsocket] = useState(undefined as any);
   //   ini socket
-  useMemo(() => {
+  useEffect(() => {
+    if(!window) return;
     const socket = io(apiHostname as string);
     setsocket(socket);
-
-    const coverBlobList = [] as any;
-    socket.on('download/cover/chunk/', ({ chunk, status }: IDownloadChunk) => {
-      if (chunk) {
+    const windowObj = window as any;
+    windowObj.socketIo = socket;
+ 
+    socket.on('download/socket',  ({ chunk, status, file, progress, sizeSent }: IDownloadChunk) => {
+      if(status === 'start'){
+        console.log('start')
+      }
+      if(status === 'downloading'){
         const blob = new Blob([chunk]);
-        coverBlobList.push(blob);
-      } else {
-        if (status === 'end') {
-          const blob = new Blob(coverBlobList);
-          const href = URL.createObjectURL(blob);
-          dispatch(
-            setCoverLink({
-              link: href,
-            })
-          );
-          setTimeout(() => {
-            coverBlobList.length = 0;
-          }, 1000);
-        }
+dispatch(setAddBlobChunk({
+  blobChunk: blob,
+  cid: file.cid | file.cover,
+}))
+      }
+      if (status === 'end') {
+        dispatch(setNewFileBlob({
+          cid: file.cid,
+          type: file.type,
+        }))   
       }
     });
 
-    const fileBlobList = [] as any;
-    let fileObj = {} as any;
-    socket.on(
-      'download/file/chunk/',
-      ({ chunk, status, file, progress, sizeSent }: IDownloadChunk) => {
-        if (status === 'start') {
-          fileObj = file;
-          const { name } = file;
-          setStatusInfoFile({
-            message: 'Starting download of ' + name,
-            progress: 25,
-          });
-        }
-
-        if (status === 'downloading') {
-          const blob = new Blob([chunk]);
-          fileBlobList.push(blob);
-          const progressPercent = Math.round(progress * 100);
-
-          setStatusInfoFile({
-            message:
-              'Downloading ' +
-              fileObj.name +
-              ': ' +
-              progressPercent +
-              '% (' +
-              byteNormalize(sizeSent) +
-              ' of ' +
-              byteNormalize(fileObj.size) +
-              ')',
-            progress: progress * 100,
-          });
-        }
-
-        if (status === 'end') {
-          const blob = new Blob(fileBlobList);
-          const href = URL.createObjectURL(blob);
-          // Create new file object
-          const newFile = new File([blob],'file', {type: fileObj.type});
-
-          dispatch(
-            fetchAddFileToIPFS({
-              file: newFile,
-            }) as any
-          )
-
-
-          dispatch(
-            setFileLink({
-              link: href,
-              found: true,
-            })
-          );
-          setTimeout(() => {
-            fileBlobList.length = 0;
-          }, 1000);
-        }
-      }
-    );
   }, []);
 
-  //   Emit
-  useMemo(() => {
-    if (!cover && cover === '') return;
-    if (!socket) return;
+//  //   Emit
+//  useMemo(() => {
+//    if (!cover && cover === '') return;
+//    if (!socket) return;
+//
+//    socket.emit('download/cover', cover);
+//  }, [cover, socket]);
 
-    socket.emit('download/cover', cover);
-  }, [cover, socket]);
+//  useMemo(() => {
+//    if (!cid && cid === '') return;
+//    if (!socket) return;
+//    if (!ipfsLoaded) return; //check if ipfs is loaded
+//    if (ipfsLoading || fetchCheckIsFileOnLocaLIpfsLoading) return; //check if ipfs is loading
+//    if (fetchCheckIsFileOnLocaLIpfsFound) return; //means file is already downloaded
+//
+//    console.log('emit download/file');
+//
+//    socket.emit('download/file', cid);
+//  }, [
+//    cid,
+//    socket,
+//    ipfsLoaded,
+//    ipfsLoading,
+//    fetchCheckIsFileOnLocaLIpfsLoading,
+//    fetchCheckIsFileOnLocaLIpfsFound,
+//  ]);
 
-  useMemo(() => {
-    if (!cid && cid === '') return;
-    if (!socket) return;
-    if (!ipfsLoaded) return; //check if ipfs is loaded
-    if (ipfsLoading || fetchCheckIsFileOnLocaLIpfsLoading) return; //check if ipfs is loading
-    if (fetchCheckIsFileOnLocaLIpfsFound) return; //means file is already downloaded
 
-    console.log('emit download/file');
+//first we need to get the file list to download => 
 
-    socket.emit('download/file', cid);
-  }, [
-    cid,
-    socket,
-    ipfsLoaded,
-    ipfsLoading,
-    fetchCheckIsFileOnLocaLIpfsLoading,
-    fetchCheckIsFileOnLocaLIpfsFound,
-  ]);
+
+ 
+
+
 };
 
 export default useSocketInit;

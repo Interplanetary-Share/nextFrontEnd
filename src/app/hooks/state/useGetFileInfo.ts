@@ -3,7 +3,7 @@ import { fetchGetComments } from '@/app/store/slices/infoFile/infoFileComments.a
 import {
   fetchCheckIsFileOnLocaLIpfs,
   fetchGetFileFromIPFS,
-} from '@/app/store/slices/ipfs/ipfs.action';
+} from '@/app/store/slices/ipfs/remote/ipfs.action';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,9 +41,9 @@ const useGetFileInfo = () => {
             if (res) {
               // file is on local ipfs node
               dispatch(fetchGetFileFromIPFS() as any);
-            }else{
+            } else {
               // file is not on local ipfs node
-              // the hook will be launched. 
+              // the hook will be launched.
             }
           });
       }

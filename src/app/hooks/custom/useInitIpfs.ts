@@ -1,7 +1,7 @@
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchInitIpfs } from '../../store/slices/ipfs/ipfs.action';
+import { fetchInitIpfs } from '../../store/slices/ipfs/remote/ipfs.action';
 import { setAddressConnected } from '../../store/slices/ipfs/ipfs.slice';
 
 const useInitIpfs = () => {

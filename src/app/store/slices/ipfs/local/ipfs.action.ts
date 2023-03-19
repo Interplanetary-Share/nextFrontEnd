@@ -2,8 +2,8 @@ import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { setFileLink } from '../infoFile/infoFile.slice';
-import { IIpfs } from './ipfs.slice';
+import { setFileLink } from '../../infoFile/infoFile.slice';
+import { IIpfs } from '../ipfs.slice';
 
 interface addFileToIPFS {
   file: File | null;
@@ -346,7 +346,8 @@ export const fetchCheckIsFileOnLocaLIpfs = createAsyncThunk(
     const ipfs = windowObj.ipfsServer;
 
     const getFirstByte = ipfs.cat(cid, {
-      timeout: 300, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
+      // timeout: 300, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
+      timeout: 1000, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
       offset: 0,
       length: 1,
     });
@@ -375,11 +376,13 @@ export const fetchCheckIsFileOnLocaLIpfsReducer = {
         message: 'File found in local IPFS',
         progress: 50,
       });
+      toast.info('File found in local IPFS: loading...');
     } else {
       setStatusInfoFile({
         message: 'File not found in local IPFS',
         progress: 25,
       });
+      toast.info('File not found in local IPFS 1');
     }
 
     state.fetchCheckIsFileOnLocaLIpfs.loading = false;
@@ -389,6 +392,7 @@ export const fetchCheckIsFileOnLocaLIpfsReducer = {
     state: IIpfs,
     action: any
   ) => {
+    toast.info('File not found in local IPFS  2');
     state.fetchCheckIsFileOnLocaLIpfs.loading = false;
     state.fetchCheckIsFileOnLocaLIpfs.found = false;
     state.fetchCheckIsFileOnLocaLIpfs.error = action.error.message;

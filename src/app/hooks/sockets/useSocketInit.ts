@@ -9,8 +9,6 @@ import { fetchAddFileToIPFS } from '@/app/store/slices/ipfs/remote/ipfs.action';
 
 import {
   addNewBlobUrl,
-  setAddBlobChunk,
-  setNewFileBlob,
   setSocketInit,
 } from '@/app/store/slices/socket/socket.slice';
 

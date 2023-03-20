@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const InfoPage = () => {
-  const { found } = useSelector((state: any) => state.infoFile);
+  const { found } = useSelector((state: any) => state.infoFile); // TODO: check this...
   const router = useRouter();
   const dispatch = useDispatch();
   const { cid } = router.query;

@@ -1,27 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchAddFileToIPFSReducer,
-  fetchCheckIsFileOnLocaLIpfsReducer,
-  fetchGetFileFromIPFSReducer,
-  fetchInitIpfsReducer,
+  addFileToIPFSReducer,
+  checkIsFileOnLocaLIpfsReducer,
+  getFileFromIPFSReducer,
+  initIpfsReducer,
 } from './ipfs.action';
 
-interface ipfsFile {
-  cid: string;
-}
-
-interface preloadedFile {
-  cid: string;
-  url: string;
-  size: number;
-}
-
-export interface IIpfs {
+export interface IlocalIpfs {
   // files preloaded in client from ipfs
-  files: preloadedFile[];
+  preloadedCid: string[];
   // add file to local ipfs
   addFileToIPFS: {
-    files: ipfsFile[];
     loading: boolean;
     error: string;
   };
@@ -34,24 +23,22 @@ export interface IIpfs {
   };
   // get file from local ipfs
   getFileFromIPFS: {
-    file: ipfsFile | undefined;
+    // file: ipfsFile | undefined;
     loading: boolean;
     error: string;
   };
   // check if file is on local ipfs
   checkIsFileOnLocaLIpfs: {
-    file: ipfsFile | undefined;
+    loading: boolean;
     found: boolean;
-    error: string;
   };
 }
 
-const initialState: IIpfs = {
+const initialState: IlocalIpfs = {
   // files preloaded in client from ipfs
-  files: [],
+  preloadedCid: [],
   // add file to local ipfs
   addFileToIPFS: {
-    files: [],
     loading: false,
     error: '',
   },
@@ -59,20 +46,18 @@ const initialState: IIpfs = {
   initIpfs: {
     globalVariable: undefined,
     info: undefined,
-    loading: false,
     error: '',
+    status: 'init',
   },
   // get file from local ipfs
   getFileFromIPFS: {
-    file: undefined,
     loading: false,
     error: '',
   },
   // check if file is on local ipfs
   checkIsFileOnLocaLIpfs: {
-    file: undefined,
+    loading: false,
     found: false,
-    error: '',
   },
 };
 
@@ -81,11 +66,10 @@ const localIpfsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    // ...fetchAddFileToIPFSReducer,
-    // ...fetchInitIpfsReducer,
-    // ...fetchGetFileFromIPFSReducer,
-    // ...fetchCheckIsFileOnLocaLIpfsReducer,
-    // ...fetchDownloadFromIpfsReducer,
+    ...checkIsFileOnLocaLIpfsReducer,
+    ...getFileFromIPFSReducer,
+    ...initIpfsReducer,
+    ...addFileToIPFSReducer,
   },
 });
 

@@ -4,10 +4,10 @@ import storage from 'redux-persist/lib/storage';
 import allFilesSlice from './slices/files/allFiles.slice';
 import infoFileSlice from './slices/infoFile/infoFile.slice';
 import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
-import ipfsSlice from './slices/ipfs/ipfs.slice';
 import userSlice from './slices/user/user.slice';
 import tagsSlice from './slices/tags/tags.slice';
 import socketSlice from './slices/socket/socket.slice';
+import localIpfs from './slices/ipfs/local/ipfs.slice';
 
 const persistConfig = {
   key: 'intershare',
@@ -21,7 +21,9 @@ const rootReducer = {
   infoFile: infoFileSlice,
   allFiles: allFilesSlice,
   user: userSlice,
-  ipfs: ipfsSlice,
+  ipfs: combineReducers({
+    local: localIpfs,
+  }),
   tags: tagsSlice,
   socket: socketSlice,
 };

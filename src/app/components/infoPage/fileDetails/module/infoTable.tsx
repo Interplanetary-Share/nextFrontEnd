@@ -12,12 +12,11 @@ interface Field {
 }
 
 const InfoTable = () => {
-  //coverLink delete cover link...
-  const { size, type, lastModified, tags, cover, date } =
-    useSelector((state: any) => state.infoFile);
+  const { size, type, lastModified, tags, cover, date } = useSelector(
+    (state: any) => state.infoFile
+  );
 
   const image = useGetBlobUrl(cover); //ESTO TRAE LA IMAGEN DE IPFS
-
 
   const fields: Array<Field> = [
     size && {

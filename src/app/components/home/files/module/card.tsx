@@ -2,8 +2,8 @@
 import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
 import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import Link from 'next/link';
-import { useState, useEffect} from 'react';
-import { useSelector  } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import CardOptionsUpper from './cardOptionsUpper';
 import CardStats from './cardStats';
 

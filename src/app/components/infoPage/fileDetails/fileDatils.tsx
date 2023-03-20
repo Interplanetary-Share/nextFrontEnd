@@ -1,12 +1,15 @@
+import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
 import WrapperFileType from '@/app/utils/previewFile/wrapperFileType';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import RightDetailsWrapper from './module/rightDetailsWrapper';
 
 const FileDatils = () => {
-  const { cid, name, type, link, description } = useSelector(
+  const { cid, name, type, description } = useSelector(
     (state: any) => state.infoFile
   );
+
+  const link = useGetBlobUrl(cid);
 
   const [hideDetails, setHideDetails] = useState(false);
   const iconDivider = hideDetails ? '🙈' : '🙉';

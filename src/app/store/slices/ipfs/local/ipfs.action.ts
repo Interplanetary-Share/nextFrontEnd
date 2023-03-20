@@ -1,21 +1,23 @@
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
+import isFilePreloaded from '@/app/utils/fileOptions/checkFileIsPreloaded';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { setFileLink } from '../../infoFile/infoFile.slice';
-import { IIpfs } from '../ipfs.slice';
+import { addNewBlobUrl } from '../../socket/socket.slice';
+import { IlocalIpfs } from './ipfs.slice';
 
 interface addFileToIPFS {
   file: File | null;
 }
 
-export const fetchAddFileToIPFS = createAsyncThunk(
+export const addFileToIPFS = createAsyncThunk(
   'infoFile/fetchAddFileToIPFS',
   async (data: addFileToIPFS, { rejectWithValue, getState }) => {
     const { file } = data;
+
     if (!file) return rejectWithValue('File is null');
 
-    console.log(`fastlog => file:`, file);
     const windowObj = window as any;
 
     if (!windowObj.ipfsServer)
@@ -44,29 +46,27 @@ export const fetchAddFileToIPFS = createAsyncThunk(
     });
 
     const cid = infoFile.cid.toString();
-    console.log(`fetchAddFileToIPFS => cid:`, cid);
-    console.log(`fetchAddFileToIPFS => infoFile:`, infoFile);
-
-    return infoFile;
-    // return true;
+    return cid;
   }
 );
-export const fetchAddFileToIPFSReducer = {
-  [fetchAddFileToIPFS.pending as any]: (state: IIpfs) => {
-    state.fetchAddFileToIPFS.loading = true;
+export const addFileToIPFSReducer = {
+  [addFileToIPFS.pending as any]: (state: IlocalIpfs) => {
+    state.addFileToIPFS.loading = true;
   },
-  [fetchAddFileToIPFS.fulfilled as any]: (state: IIpfs, action: any) => {
-    state.info.file = action.payload;
-    state.fetchAddFileToIPFS.loading = false;
+  [addFileToIPFS.fulfilled as any]: (state: IlocalIpfs, action: any) => {
+    if (!state.preloadedCid.includes(action.payload)) {
+      state.preloadedCid.push(action.payload);
+    }
+    state.addFileToIPFS.loading = false;
   },
-  [fetchAddFileToIPFS.rejected as any]: (state: IIpfs, action: any) => {
-    state.fetchAddFileToIPFS.loading = false;
-    state.fetchAddFileToIPFS.error = action.error.message;
+  [addFileToIPFS.rejected as any]: (state: IlocalIpfs, action: any) => {
+    state.addFileToIPFS.loading = false;
+    state.addFileToIPFS.error = action.error.message;
     toast.error(action.error.message);
   },
 };
 
-export const fetchInitIpfs = createAsyncThunk(
+export const initIpfs = createAsyncThunk(
   'infoFile/fetchInitIpfs',
   async (data, { rejectWithValue, getState }) => {
     const windowObj = window as any;
@@ -226,36 +226,48 @@ export const fetchInitIpfs = createAsyncThunk(
     //   cids.push(cid.ref);
     // }
 
-    // console.log(`fastlog => cids:`, cids);
     // return cids;
   }
 );
-export const fetchInitIpfsReducer = {
-  [fetchInitIpfs.pending as any]: (state: IIpfs) => {
-    state.fetchInitIpfs.loading = true;
-    state.fetchInitIpfs.loaded = false;
+export const initIpfsReducer = {
+  [initIpfs.pending as any]: (state: IlocalIpfs) => {
+    state.initIpfs.globalVariable = 'IpfsCore';
+    state.initIpfs.status = 'loading';
   },
-  [fetchInitIpfs.fulfilled as any]: (state: IIpfs, action: any) => {
+  [initIpfs.fulfilled as any]: (state: IlocalIpfs, action: any) => {
     toast.success('IPFS Initialized');
-    state.info.ipfs = action.payload;
-    state.fetchInitIpfs.loading = false;
-    state.fetchInitIpfs.loaded = true;
+    state.initIpfs.status = 'idle';
+    state.initIpfs.info = action.payload;
   },
-  [fetchInitIpfs.rejected as any]: (state: IIpfs, action: any) => {
+  [initIpfs.rejected as any]: (state: IlocalIpfs, action: any) => {
     toast.error(action.error.message);
-    state.fetchInitIpfs.loading = false;
-    state.fetchInitIpfs.loaded = false;
-    state.fetchInitIpfs.error = action.error.message;
+    state.initIpfs.status = 'error';
+    state.initIpfs.error = action.error.message;
   },
 };
 
 // TODO: add cover logic in useGetFileInfo
 
-export const fetchGetFileFromIPFS = createAsyncThunk(
+export const getFileFromIPFS = createAsyncThunk(
   'infoFile/fetchGetFileFromIPFS',
-  async (data, { rejectWithValue, getState, dispatch }) => {
-    const { infoFile } = getState() as any;
-    const { cid, size, type } = infoFile;
+  async (
+    data: {
+      cid: string;
+      // size: number;
+      // type: string;
+    },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const {
+      socket: { urlList },
+    } = getState() as any;
+    const {
+      cid,
+      //  size,
+      // type,
+    } = data;
+
+    if (isFilePreloaded(urlList, cid)) return;
 
     const windowObj = window as any;
 
@@ -268,82 +280,91 @@ export const fetchGetFileFromIPFS = createAsyncThunk(
 
     const fileBlobList = [] as any;
 
-    let chunkSize = 0;
+    // let chunkSize = 0;
     for await (const chunk of ipfs.cat(cid)) {
-      chunkSize += chunk.length;
+      // chunkSize += chunk.length;
 
-      const progress = (chunkSize / size) * 100 * 0.75;
+      // const progress = (chunkSize / size) * 100 * 0.75;
 
       const buffer = Buffer.from(chunk);
       const blob = new Blob([buffer]);
       fileBlobList.push(blob);
 
       // setTimeout(() => {
-      setStatusInfoFile({
-        message:
-          'Downloading file: ' +
-          byteNormalize(chunkSize) +
-          ' of ' +
-          byteNormalize(size) +
-          ' downloaded',
-        progress: 25 + progress,
-      });
+      // setStatusInfoFile({
+      //   message:
+      //     'Downloading file: ' +
+      //     byteNormalize(chunkSize) +
+      //     ' of ' +
+      //     byteNormalize(size) +
+      //     ' downloaded',
+      //   progress: 25 + progress,
+      // });
     }
 
-    const blob = new Blob(fileBlobList, { type: type });
+    // const blob = new Blob(fileBlobList, { type: type });
+    const blob = new Blob(fileBlobList);
     const href = URL.createObjectURL(blob);
-    console.log(`fastlog => href:`, href);
-
     dispatch(
-      setFileLink({
-        link: href,
-        found: true,
+      addNewBlobUrl({
+        url: href,
+        cid: cid,
       })
     );
 
+    // dispatch(
+    //   setFileLink({
+    //     link: href,
+    //     found: true,
+    //   })
+    // );
+
     setTimeout(() => {
-      setStatusInfoFile({
-        message: 'File downloaded successfully',
-        progress: 100,
-      });
+      // setStatusInfoFile({
+      //   message: 'File downloaded successfully',
+      //   progress: 100,
+      // });
       fileBlobList.length = 0;
-      chunkSize = 0;
+      // chunkSize = 0;
     }, 100);
-    return href;
+    return cid;
   }
 );
-export const fetchGetFileFromIPFSReducer = {
-  [fetchGetFileFromIPFS.pending as any]: (state: IIpfs) => {
-    state.fetchGetFileFromIPFS.loading = true;
+export const getFileFromIPFSReducer = {
+  [getFileFromIPFS.pending as any]: (state: IlocalIpfs) => {
+    state.getFileFromIPFS.loading = true;
   },
-  [fetchGetFileFromIPFS.fulfilled as any]: (state: IIpfs, action: any) => {
-    // state.info.file = action.payload;
-    state.fetchGetFileFromIPFS.loading = false;
-  },
-  [fetchGetFileFromIPFS.rejected as any]: (state: IIpfs, action: any) => {
-    state.fetchGetFileFromIPFS.loading = false;
+  [getFileFromIPFS.fulfilled as any]: (state: IlocalIpfs, action: any) => {
+    state.getFileFromIPFS.loading = false;
 
-    state.fetchGetFileFromIPFS.error = action.error.message;
+    if (!state.preloadedCid.includes(action.payload)) {
+      state.preloadedCid.push(action.payload);
+    }
+  },
+  [getFileFromIPFS.rejected as any]: (state: IlocalIpfs, action: any) => {
+    state.getFileFromIPFS.loading = false;
+    state.getFileFromIPFS.error = action.error.message;
     toast.error(action.error.message);
   },
 };
 
-export const fetchCheckIsFileOnLocaLIpfs = createAsyncThunk(
+export const checkIsFileOnLocaLIpfs = createAsyncThunk(
   'infoFile/fetchCheckIsFileOnLocaLIpfs',
-  async (data, { rejectWithValue, getState, dispatch }) => {
-    console.time('fetchCheckIsFileOnLocaLIpfs');
-
-    const { infoFile } = getState() as any;
-    const { cid } = infoFile;
+  async (data: { cid: string }, { rejectWithValue, getState, dispatch }) => {
+    // const { infoFile } = getState() as any;
+    const { cid } = data;
+    if (!cid) return false;
+    console.log('checkIsFileOnLocaLIpfs', cid);
 
     const windowObj = window as any;
 
     if (!windowObj.ipfsServer) {
       toast.error('IPFS Local Node is not running');
-      return rejectWithValue('IPFS Local Node is not running');
+      return false;
     }
 
     const ipfs = windowObj.ipfsServer;
+    let isFileInLocalIpfs = false;
 
     const getFirstByte = ipfs.cat(cid, {
       // timeout: 300, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
@@ -352,49 +373,29 @@ export const fetchCheckIsFileOnLocaLIpfs = createAsyncThunk(
       length: 1,
     });
 
-    let isFileInLocalIpfs = false;
     for await (const chunk of getFirstByte) {
       isFileInLocalIpfs = true;
       break;
     }
-    console.timeEnd('fetchCheckIsFileOnLocaLIpfs');
 
     return isFileInLocalIpfs;
   }
 );
-export const fetchCheckIsFileOnLocaLIpfsReducer = {
-  [fetchCheckIsFileOnLocaLIpfs.pending as any]: (state: IIpfs) => {
-    state.fetchCheckIsFileOnLocaLIpfs.loading = true;
-    state.fetchCheckIsFileOnLocaLIpfs.found = false;
+export const checkIsFileOnLocaLIpfsReducer = {
+  [checkIsFileOnLocaLIpfs.pending as any]: (state: IlocalIpfs) => {
+    state.checkIsFileOnLocaLIpfs.loading = true;
   },
-  [fetchCheckIsFileOnLocaLIpfs.fulfilled as any]: (
-    state: IIpfs,
+  [checkIsFileOnLocaLIpfs.fulfilled as any]: (
+    state: IlocalIpfs,
     action: any
   ) => {
-    if (action.payload) {
-      setStatusInfoFile({
-        message: 'File found in local IPFS',
-        progress: 50,
-      });
-      toast.info('File found in local IPFS: loading...');
-    } else {
-      setStatusInfoFile({
-        message: 'File not found in local IPFS',
-        progress: 25,
-      });
-      toast.info('File not found in local IPFS 1');
-    }
-
-    state.fetchCheckIsFileOnLocaLIpfs.loading = false;
-    state.fetchCheckIsFileOnLocaLIpfs.found = action.payload;
+    state.checkIsFileOnLocaLIpfs.loading = false;
+    state.checkIsFileOnLocaLIpfs.found = action.payload;
   },
-  [fetchCheckIsFileOnLocaLIpfs.rejected as any]: (
-    state: IIpfs,
+  [checkIsFileOnLocaLIpfs.rejected as any]: (
+    state: IlocalIpfs,
     action: any
   ) => {
-    toast.info('File not found in local IPFS  2');
-    state.fetchCheckIsFileOnLocaLIpfs.loading = false;
-    state.fetchCheckIsFileOnLocaLIpfs.found = false;
-    state.fetchCheckIsFileOnLocaLIpfs.error = action.error.message;
+    action.payload = false;
   },
 };

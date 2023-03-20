@@ -17,11 +17,11 @@ const HooksContainer = () => {
   useRedirect();
   useCheckUserInfo();
 
-  useGetFiles();
-  useGetFileInfo();
   useGetTags();
 
-  useSocketInit();
+  useGetFileInfo(); //get fileinfo from DB and preload all files
+  useGetFiles(); //get filesinfo  from DB and preload cover files
+  useSocketInit(); //init the socket and wait to download files to preload files.
   return (
     <>
       <ShareModal />

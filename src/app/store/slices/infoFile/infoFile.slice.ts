@@ -58,9 +58,6 @@ export interface IInfoFile {
   cover: string;
   date: string;
 
-  link: string;
-  coverLink: string;
-
   likes: string[];
   dislikes: string[];
   favorites: string[];
@@ -127,9 +124,6 @@ const initialState: IInfoFile = {
   cover: '',
   date: '',
 
-  link: '',
-  coverLink: '',
-
   likes: [],
   dislikes: [],
   favorites: [],
@@ -188,15 +182,6 @@ const infoFileSlice = createSlice({
     setCidFile: (state, action) => {
       state.cid = action.payload;
     },
-    setFileLink: (state, action) => {
-      const { found, link } = action.payload;
-      if (found) state.found = found;
-      if (link) state.link = link;
-    },
-    setCoverLink: (state, action) => {
-      const { link } = action.payload;
-      if (link) state.coverLink = link;
-    },
   },
   extraReducers: {
     ...fetchInfoFileFromDbReducer,
@@ -212,6 +197,6 @@ const infoFileSlice = createSlice({
   },
 });
 
-export const { setCidFile, setFileLink, setCoverLink } = infoFileSlice.actions;
+export const { setCidFile } = infoFileSlice.actions;
 
 export default infoFileSlice.reducer;

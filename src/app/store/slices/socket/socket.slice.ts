@@ -1,3 +1,4 @@
+import isFilePreloaded from '@/app/utils/fileOptions/checkFileIsPreloaded';
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 
@@ -65,41 +66,11 @@ const socketSlice = createSlice({
   name: 'socket',
   initialState,
   reducers: {
-    //   setAddBlobChunk(state, action) {
-    //       const { blobChunk, cid, chunkNumber } = action.payload;
-    //       const { blobList } = state.addBlobChunk;
-    //
-    //       const existFile =  blobList.find((blobFile) => blobFile.cid === cid);
-    //       if(!existFile){
-    //           blobList.push({ blob: blobChunk, cid, chunkNumber });
-    //       }else{
-    //           const existChunk = existFile.chunkNumber === chunkNumber;
-    //           if(!existChunk){
-    //               blobList.push({ blob: blobChunk, cid, chunkNumber });
-    //           }
-    //       }
-    //
-    //   },
-    // setNewFileBlob(state, action) {
-
-    //      const fileBlobArr =  blobList.filter((blobFile) => blobFile.cid === cid);
-    //      const newBlob = new Blob(fileBlobArr.map((blobFile) => blobFile.blob)); // TODO: CHECK TYPE
-
-    //      if(newBlobList.some((blobFile) => blobFile.cid === cid)){
-    //          newBlobList.push({ blob: newBlob, cid });
-    //      }else{
-    //        toast.error('File already exist');
-    //      }
-
-    //     urlList.push({ url: URL.createObjectURL(newBlob), cid });
-    //     const newFile = new File([newBlob], 'file', { type });
-    //     fileList.push({file: newFile, cid });
-    //},
-
     addNewBlobUrl(state, action) {
       const { url, cid } = action.payload;
       const { urlList } = state;
-      if (!urlList.some((urlFile) => urlFile.cid === cid)) {
+
+      if (!isFilePreloaded(urlList, cid)) {
         urlList.push({ url, cid });
       }
     },
@@ -108,13 +79,7 @@ const socketSlice = createSlice({
       state.socketInit.globalVar = action.payload;
     },
   },
-  extraReducers: {
-    //   ...fetchAddFileToIPFSReducer,
-    //   ...fetchInitIpfsReducer,
-    //   ...fetchGetFileFromIPFSReducer,
-    //   ...fetchCheckIsFileOnLocaLIpfsReducer,
-    // ...fetchDownloadFromIpfsReducer,
-  },
+  extraReducers: {},
 });
 
 export const { addNewBlobUrl, setSocketInit } = socketSlice.actions;

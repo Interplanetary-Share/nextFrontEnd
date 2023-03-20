@@ -74,40 +74,6 @@ const useSocketInit = () => {
 
   }, []);
 
-//  //   Emit
-//  useMemo(() => {
-//    if (!cover && cover === '') return;
-//    if (!socket) return;
-//
-//    socket.emit('download/cover', cover);
-//  }, [cover, socket]);
-
-//  useMemo(() => {
-//    if (!cid && cid === '') return;
-//    if (!socket) return;
-//    if (!ipfsLoaded) return; //check if ipfs is loaded
-//    if (ipfsLoading || fetchCheckIsFileOnLocaLIpfsLoading) return; //check if ipfs is loading
-//    if (fetchCheckIsFileOnLocaLIpfsFound) return; //means file is already downloaded
-//
-//    console.log('emit download/file');
-//
-//    socket.emit('download/file', cid);
-//    socket.emit('download', cid);
-//  }, [
-//    cid,
-//    socket,
-//    ipfsLoaded,
-//    ipfsLoading,
-//    fetchCheckIsFileOnLocaLIpfsLoading,
-//    fetchCheckIsFileOnLocaLIpfsFound,
-//  ]);
-
-
-//first we need to get the file list to download => 
-
-
- 
-
 
 };
 

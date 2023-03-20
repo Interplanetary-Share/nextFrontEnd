@@ -5,7 +5,7 @@ import {
   setFileLink
 } from '@/app/store/slices/infoFile/infoFile.slice';
 import { fetchAddFileToIPFS } from '@/app/store/slices/ipfs/ipfs.action';
-import { setAddBlobChunk, setNewFileBlob } from '@/app/store/slices/socket/socket.slice';
+import { addNewBlobUrl, setAddBlobChunk, setNewFileBlob, setSocketInit } from '@/app/store/slices/socket/socket.slice';
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { useMemo, useRef, useState, useEffect } from 'react';
@@ -19,17 +19,18 @@ interface IDownloadChunk {
   file: any;
   progress: number;
   sizeSent: number;
+  chunkNumber: number;
 }
 
 const useSocketInit = () => {
-  const { cid, found, cover } = useSelector((state: any) => state.infoFile);
-  const {
-    fetchInitIpfs: { loaded: ipfsLoaded, loading: ipfsLoading },
-    fetchCheckIsFileOnLocaLIpfs: {
-      loading: fetchCheckIsFileOnLocaLIpfsLoading,
-      found: fetchCheckIsFileOnLocaLIpfsFound,
-    },
-  } = useSelector((state: any) => state.ipfs);
+  //const { cid, found, cover } = useSelector((state: any) => state.infoFile);
+  //const {
+  //  fetchInitIpfs: { loaded: ipfsLoaded, loading: ipfsLoading },
+  //  fetchCheckIsFileOnLocaLIpfs: {
+  //    loading: fetchCheckIsFileOnLocaLIpfsLoading,
+  //    found: fetchCheckIsFileOnLocaLIpfsFound,
+  //  },
+  //} = useSelector((state: any) => state.ipfs);
   const dispatch = useDispatch();
 
   const toastId = useRef(null);
@@ -41,24 +42,34 @@ const useSocketInit = () => {
     setsocket(socket);
     const windowObj = window as any;
     windowObj.socketIo = socket;
- 
-    socket.on('download/socket',  ({ chunk, status, file, progress, sizeSent }: IDownloadChunk) => {
+    dispatch(setSocketInit('socketIo'));
+
+
+    const blobList = [] as any;
+    socket.on('download/socket',  ({ chunk, status, file, progress, sizeSent, chunkNumber }: IDownloadChunk) => {
+      console.log('download/file', file);
       if(status === 'start'){
         console.log('start')
       }
       if(status === 'downloading'){
         const blob = new Blob([chunk]);
-dispatch(setAddBlobChunk({
-  blobChunk: blob,
-  cid: file.cid | file.cover,
-}))
+
+        blobList.push(blob);
+ 
       }
       if (status === 'end') {
-        dispatch(setNewFileBlob({
+
+        const blob = new Blob(blobList);
+        //const file = new File([blob], file.name, { type: file.type });
+        const url = URL.createObjectURL(blob);
+
+        dispatch(addNewBlobUrl({
+          url: url,
           cid: file.cid,
-          type: file.type,
         }))   
+        blobList.length = 0;
       }
+      
     });
 
   }, []);
@@ -81,6 +92,7 @@ dispatch(setAddBlobChunk({
 //    console.log('emit download/file');
 //
 //    socket.emit('download/file', cid);
+//    socket.emit('download', cid);
 //  }, [
 //    cid,
 //    socket,

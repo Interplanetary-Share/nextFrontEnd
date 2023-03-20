@@ -22,11 +22,11 @@ const useInitIpfs = () => {
             return peer.addr.toString();
           });
 
-          dispatch(setAddressConnected(address));
-          if (peers.length === 0) return;
-          // get connected peers
-          console.log(`fastlog => peers number`, peers.length);
-        });
+//          dispatch(setAddressConnected(address));
+//          if (peers.length === 0) return;
+//          // get connected peers
+//          console.log(`fastlog => peers number`, peers.length);
+      });
       }
     }, 3000);
 

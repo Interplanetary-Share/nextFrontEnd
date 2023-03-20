@@ -36,7 +36,7 @@ const Card = ({
   reports,
   favorites,
 }: CardProps) => {
-  const image = useGetBlobUrl(cid); //ESTO TRAE LA IMAGEN DE IPFS
+  const image = useGetBlobUrl(cover); //ESTO TRAE LA IMAGEN DE IPFS
 
   return (
     <div className="card card-compact bg-secondary shadow-xl">

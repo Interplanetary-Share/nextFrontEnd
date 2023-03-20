@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
 import { format } from 'date-fns';
@@ -11,8 +12,12 @@ interface Field {
 }
 
 const InfoTable = () => {
-  const { coverLink, size, type, lastModified, tags, cover, date } =
+  //coverLink delete cover link...
+  const { size, type, lastModified, tags, cover, date } =
     useSelector((state: any) => state.infoFile);
+
+  const image = useGetBlobUrl(cover); //ESTO TRAE LA IMAGEN DE IPFS
+
 
   const fields: Array<Field> = [
     size && {
@@ -42,7 +47,7 @@ const InfoTable = () => {
         {cover && (
           <div className="avatar w-full">
             <div className="w-64 rounded mx-auto">
-              <img src={coverLink} alt="cover" />
+              <img src={image} alt="cover" />
             </div>
           </div>
         )}

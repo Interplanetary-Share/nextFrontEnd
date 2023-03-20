@@ -1,3 +1,4 @@
+import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
 import { fetchDownloadFile } from '@/app/store/slices/infoFile/infoFile.action';
 import {
   handleDislike,
@@ -12,9 +13,12 @@ import CardStats from '../../home/files/module/cardStats';
 
 const FileOptions = () => {
   const { id, reports } = useSelector((state: any) => state.user);
-  const { cid, type, likes, dislikes, favorites, name, link } = useSelector(
+  const { cid, type, likes, dislikes, favorites, name } = useSelector(
     (state: any) => state.infoFile
   );
+
+  const link = useGetBlobUrl(cid);
+
   const dispatch = useDispatch();
 
   const buttonClassName = (userOptionArr: string[]) => {

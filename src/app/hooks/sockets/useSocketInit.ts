@@ -6,6 +6,7 @@ import {
   addNewBlobUrl,
   setSocketInit,
 } from '@/app/store/slices/socket/socket.slice';
+import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -53,6 +54,12 @@ const useSocketInit = () => {
           const blob = new Blob([chunk]);
 
           blobList.push(blob);
+          const { size } = file;
+
+          setStatusInfoFile({
+            message: `Downloading...` + sizeSent + '/' + size,
+            progress: progress,
+          });
         }
         if (status === 'end') {
           const blob = new Blob(blobList);

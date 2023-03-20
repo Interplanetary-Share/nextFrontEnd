@@ -3,7 +3,6 @@ import isFilePreloaded from '@/app/utils/fileOptions/checkFileIsPreloaded';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { setFileLink } from '../../infoFile/infoFile.slice';
 import { addNewBlobUrl } from '../../socket/socket.slice';
 import { IlocalIpfs } from './ipfs.slice';
 
@@ -280,15 +279,21 @@ export const getFileFromIPFS = createAsyncThunk(
 
     const fileBlobList = [] as any;
 
-    // let chunkSize = 0;
+    let chunkSize = 0;
     for await (const chunk of ipfs.cat(cid)) {
-      // chunkSize += chunk.length;
+      chunkSize += chunk.length;
 
       // const progress = (chunkSize / size) * 100 * 0.75;
 
       const buffer = Buffer.from(chunk);
       const blob = new Blob([buffer]);
       fileBlobList.push(blob);
+
+      setStatusInfoFile({
+        message:
+          'Downloading file: ' + byteNormalize(chunkSize) + ' downloaded',
+        progress: 50,
+      });
 
       // setTimeout(() => {
       // setStatusInfoFile({
@@ -311,13 +316,6 @@ export const getFileFromIPFS = createAsyncThunk(
         cid: cid,
       })
     );
-
-    // dispatch(
-    //   setFileLink({
-    //     link: href,
-    //     found: true,
-    //   })
-    // );
 
     setTimeout(() => {
       // setStatusInfoFile({
@@ -355,6 +353,10 @@ export const checkIsFileOnLocaLIpfs = createAsyncThunk(
     const { cid } = data;
     if (!cid) return false;
     console.log('checkIsFileOnLocaLIpfs', cid);
+    setStatusInfoFile({
+      message: 'Checking if file is already in local IPFS',
+      progress: 20,
+    });
 
     const windowObj = window as any;
 
@@ -391,11 +393,22 @@ export const checkIsFileOnLocaLIpfsReducer = {
   ) => {
     state.checkIsFileOnLocaLIpfs.loading = false;
     state.checkIsFileOnLocaLIpfs.found = action.payload;
+    if (action.payload) {
+      setStatusInfoFile({
+        message: 'File is already in local IPFS, starting download',
+        progress: 25,
+      });
+    }
   },
   [checkIsFileOnLocaLIpfs.rejected as any]: (
     state: IlocalIpfs,
     action: any
   ) => {
+    state.checkIsFileOnLocaLIpfs.loading = false;
     action.payload = false;
+    setStatusInfoFile({
+      message: 'File is not in local IPFS, starting download',
+      progress: 25,
+    });
   },
 };

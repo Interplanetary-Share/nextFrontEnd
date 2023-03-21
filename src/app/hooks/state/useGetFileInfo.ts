@@ -4,18 +4,16 @@ import {
   checkIsFileOnLocaLIpfs,
   getFileFromIPFS,
 } from '@/app/store/slices/ipfs/local/ipfs.action';
+import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import isFilePreloaded from '@/app/utils/fileOptions/checkFileIsPreloaded';
-// import {
-//   fetchCheckIsFileOnLocaLIpfs,
-//   fetchGetFileFromIPFS,
-// } from '@/app/store/slices/ipfs/remote/ipfs.action';
-// import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
+import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
+
 import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchInfoFileFromDb } from '../../store/slices/infoFile/infoFile.action';
 
 const useGetFileInfo = () => {
-  const { cid, cover } = useSelector((state: any) => state.infoFile);
+  const { cid, cover, size } = useSelector((state: any) => state.infoFile);
   const {
     socketInit: { globalVar },
     urlList,
@@ -28,8 +26,6 @@ const useGetFileInfo = () => {
 
   useMemo(() => {
     if (cid && cid !== '') {
-      console.log('useGetFileInfo: cid', cid);
-
       dispatch(fetchInfoFileFromDb() as any);
       dispatch(fetchGetComments() as any);
     }
@@ -43,6 +39,10 @@ const useGetFileInfo = () => {
     if (!status || status !== 'idle') return;
 
     if (!isFilePreloaded(urlList, cid)) {
+      setStatusInfoFile({
+        message: 'Checking if file is already in local IPFS',
+        progress: 20,
+      });
       dispatch(
         checkIsFileOnLocaLIpfs({
           cid: cid,
@@ -51,16 +51,42 @@ const useGetFileInfo = () => {
         .unwrap()
         .then((found: boolean) => {
           if (found) {
+            setStatusInfoFile({
+              message: 'File is already in local IPFS, starting download',
+              progress: 25,
+            });
+
+            setTimeout(() => {
+              setStatusInfoFile({
+                message:
+                  'Downloading ' + byteNormalize(size) + ' from local IPFS',
+                progress: 100,
+              });
+            }, 0);
+
             dispatch(
               getFileFromIPFS({
                 cid: cid,
               }) as any
             );
           } else {
+            setStatusInfoFile({
+              message: 'File is not in local IPFS, starting download',
+              progress: 25,
+            });
             // Download from server and add to ipfs
             const socket = window[globalVar] as any;
             socket.emit('download', cid);
           }
+        })
+        .catch((err: any) => {
+          setStatusInfoFile({
+            message: 'File is not in local IPFS, starting download',
+            progress: 25,
+          });
+          // Download from server and add to ipfs
+          const socket = window[globalVar] as any;
+          socket.emit('download', cid);
         });
     }
   }, [cid, globalVar, status]);
@@ -91,34 +117,14 @@ const useGetFileInfo = () => {
             const socket = window[globalVar] as any;
             socket.emit('download', cover);
           }
+        })
+        .catch((err: any) => {
+          // Download from server and add to ipfs
+          const socket = window[globalVar] as any;
+          socket.emit('download', cover);
         });
     }
   }, [cover, globalVar, status]);
 };
 
 export default useGetFileInfo;
-
-// useMemo(() => {
-//   if (cid && cid !== '') {
-//     console.log(`fastlog => ipfsLoaded:`, ipfsLoaded);
-//     if (ipfsLoaded) {
-//       setStatusInfoFile({
-//         message: 'Getting file from Local IPFS node',
-//         progress: 20,
-//       });
-
-//       dispatch(fetchCheckIsFileOnLocaLIpfs() as any)
-//         .unwrap()
-//         .then((res: any) => {
-//           console.log(`fastlog => res:`, res);
-//           if (res) {
-//             // file is on local ipfs node
-//             dispatch(fetchGetFileFromIPFS() as any);
-//           } else {
-//             // file is not on local ipfs node
-//             // the hook will be launched.
-//           }
-//         });
-//     }
-//   }
-// }, [cid, ipfsLoaded]);

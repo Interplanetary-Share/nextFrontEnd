@@ -48,18 +48,12 @@ const initialState: ITags = {
 const infoFileSlice = createSlice({
   name: 'tags',
   initialState,
-  reducers: {
-    // setCidFile: (state, action) => {
-    //   state.cid = action.payload;
-    // },
-  },
+  reducers: {},
   extraReducers: {
     ...fetchCreateOrUpdateTagReducer,
     ...fetchTagsReducer,
     ...fetchTagInfoReducer,
   },
 });
-
-// export const { setCidFile } = infoFileSlice.actions;
 
 export default infoFileSlice.reducer;

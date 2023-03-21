@@ -8,8 +8,9 @@ import {
 } from '@/app/store/slices/socket/socket.slice';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
 
 interface IDownloadChunk {
@@ -23,17 +24,16 @@ interface IDownloadChunk {
 }
 
 const useSocketInit = () => {
+  const { cid } = useSelector((state: any) => state.infoFile);
+
   const dispatch = useDispatch();
+  const [socketVar, setsocket] = useState(undefined as any);
 
   const toastId = useRef(null);
   //   ini socket
-  useEffect(() => {
-    if (!window) return;
+  useMemo(() => {
     const socket = io(apiHostname as string);
-    const windowObj = window as any;
-    windowObj.socketIo = socket;
-
-    dispatch(setSocketInit('socketIo'));
+    setsocket(socket);
 
     const blobList = [] as any;
     socket.on(
@@ -46,20 +46,20 @@ const useSocketInit = () => {
         sizeSent,
         chunkNumber,
       }: IDownloadChunk) => {
-        console.log('download/file', file);
-        if (status === 'start') {
-          console.log('start');
-        }
+        // if (status === 'start') {
+        // }
         if (status === 'downloading') {
           const blob = new Blob([chunk]);
 
           blobList.push(blob);
           const { size } = file;
 
-          setStatusInfoFile({
-            message: `Downloading...` + sizeSent + '/' + size,
-            progress: progress,
-          });
+          if (cid && cid === file.cid) {
+            setStatusInfoFile({
+              message: `Downloading...` + sizeSent + '/' + size,
+              progress: progress,
+            });
+          }
         }
         if (status === 'end') {
           const blob = new Blob(blobList);
@@ -78,6 +78,13 @@ const useSocketInit = () => {
       }
     );
   }, []);
+
+  useEffect(() => {
+    if (!window) return;
+    const windowObj = window as any;
+    windowObj.socketIo = socketVar;
+    dispatch(setSocketInit('socketIo'));
+  }, [socketVar]);
 };
 
 export default useSocketInit;

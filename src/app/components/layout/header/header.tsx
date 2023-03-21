@@ -10,7 +10,7 @@ const Header = () => {
           href="/"
           className="btn btn-ghost normal-case text-xl text-white bg-secondary"
         >
-          InterPlanetary Share
+          Intergalac
         </Link>
       </div>
 

@@ -59,6 +59,13 @@ const useGetFiles = () => {
               const socket = window[globalVar] as any;
               socket.emit('download', cover);
             }
+          })
+          .catch((err: any) => {
+            console.log(`fastlog => found  useEffect2:`);
+
+            // Download from server and add to ipfs
+            const socket = window[globalVar] as any;
+            socket.emit('download', cover);
           });
       }
     });

@@ -6,7 +6,7 @@ import FileDatils from '@/app/components/infoPage/fileDetails/fileDatils';
 import FileOptions from '@/app/components/infoPage/fileOptions/fileOptions';
 import { setCidFile } from '@/app/store/slices/infoFile/infoFile.slice';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const InfoPage = () => {
@@ -15,9 +15,13 @@ const InfoPage = () => {
   const dispatch = useDispatch();
   const { cid } = router.query;
 
-  useMemo(() => {
+  useEffect(() => {
     if (!cid || cid === '') return;
     dispatch(setCidFile(cid));
+
+    return () => {
+      dispatch(setCidFile(''));
+    };
   }, [cid]);
 
   return (

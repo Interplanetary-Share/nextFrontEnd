@@ -252,19 +252,13 @@ export const getFileFromIPFS = createAsyncThunk(
   async (
     data: {
       cid: string;
-      // size: number;
-      // type: string;
     },
     { rejectWithValue, getState, dispatch }
   ) => {
     const {
       socket: { urlList },
     } = getState() as any;
-    const {
-      cid,
-      //  size,
-      // type,
-    } = data;
+    const { cid } = data;
 
     if (isFilePreloaded(urlList, cid)) return;
 
@@ -279,35 +273,17 @@ export const getFileFromIPFS = createAsyncThunk(
 
     const fileBlobList = [] as any;
 
+    const ipfsAsyncIterator = ipfs.cat(cid);
+
     let chunkSize = 0;
-    for await (const chunk of ipfs.cat(cid)) {
+
+    for await (const chunk of ipfsAsyncIterator) {
       chunkSize += chunk.length;
-
-      // const progress = (chunkSize / size) * 100 * 0.75;
-
       const buffer = Buffer.from(chunk);
       const blob = new Blob([buffer]);
       fileBlobList.push(blob);
-
-      setStatusInfoFile({
-        message:
-          'Downloading file: ' + byteNormalize(chunkSize) + ' downloaded',
-        progress: 50,
-      });
-
-      // setTimeout(() => {
-      // setStatusInfoFile({
-      //   message:
-      //     'Downloading file: ' +
-      //     byteNormalize(chunkSize) +
-      //     ' of ' +
-      //     byteNormalize(size) +
-      //     ' downloaded',
-      //   progress: 25 + progress,
-      // });
     }
 
-    // const blob = new Blob(fileBlobList, { type: type });
     const blob = new Blob(fileBlobList);
     const href = URL.createObjectURL(blob);
     dispatch(
@@ -317,14 +293,8 @@ export const getFileFromIPFS = createAsyncThunk(
       })
     );
 
-    setTimeout(() => {
-      // setStatusInfoFile({
-      //   message: 'File downloaded successfully',
-      //   progress: 100,
-      // });
-      fileBlobList.length = 0;
-      // chunkSize = 0;
-    }, 100);
+    fileBlobList.length = 0;
+
     return cid;
   }
 );
@@ -349,14 +319,8 @@ export const getFileFromIPFSReducer = {
 export const checkIsFileOnLocaLIpfs = createAsyncThunk(
   'infoFile/fetchCheckIsFileOnLocaLIpfs',
   async (data: { cid: string }, { rejectWithValue, getState, dispatch }) => {
-    // const { infoFile } = getState() as any;
     const { cid } = data;
     if (!cid) return false;
-    console.log('checkIsFileOnLocaLIpfs', cid);
-    setStatusInfoFile({
-      message: 'Checking if file is already in local IPFS',
-      progress: 20,
-    });
 
     const windowObj = window as any;
 
@@ -370,7 +334,8 @@ export const checkIsFileOnLocaLIpfs = createAsyncThunk(
 
     const getFirstByte = ipfs.cat(cid, {
       // timeout: 300, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
-      timeout: 1000, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
+      // timeout: 1000, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
+      timeout: 2000, // 10 seconds to check // 5 seems to be enough but slow, debug in 100ms
       offset: 0,
       length: 1,
     });
@@ -393,12 +358,6 @@ export const checkIsFileOnLocaLIpfsReducer = {
   ) => {
     state.checkIsFileOnLocaLIpfs.loading = false;
     state.checkIsFileOnLocaLIpfs.found = action.payload;
-    if (action.payload) {
-      setStatusInfoFile({
-        message: 'File is already in local IPFS, starting download',
-        progress: 25,
-      });
-    }
   },
   [checkIsFileOnLocaLIpfs.rejected as any]: (
     state: IlocalIpfs,
@@ -406,9 +365,5 @@ export const checkIsFileOnLocaLIpfsReducer = {
   ) => {
     state.checkIsFileOnLocaLIpfs.loading = false;
     action.payload = false;
-    setStatusInfoFile({
-      message: 'File is not in local IPFS, starting download',
-      progress: 25,
-    });
   },
 };

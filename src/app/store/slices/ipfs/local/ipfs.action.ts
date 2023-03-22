@@ -29,10 +29,10 @@ export const addFileToIPFS = createAsyncThunk(
     // const stream = file.stream().tee();
     const stream = file.stream();
 
-    toast.info('Saving file to local IPFS...', {
-      toastId: 'uploadingFileToIPFS',
-      autoClose: 3000,
-    });
+    // toast.info('Saving file to local IPFS...', {
+    //   toastId: 'uploadingFileToIPFS',
+    //   autoClose: 3000,
+    // });
 
     const infoFile = await ipfs.add(stream, {
       progress: (prog: any) => console.log(`received: ${byteNormalize(prog)}`),

@@ -12,7 +12,7 @@ interface CardProps {
   link?: string;
   date?: string;
   size?: string;
-  type?: string;
+  type: string;
   likes?: [string];
   dislikes?: [string];
   reports?: [string];

@@ -38,7 +38,7 @@ export const addFileToIPFS = createAsyncThunk(
     // });
 
     const infoFile = await ipfs.add(stream, {
-      progress: (prog: any) => console.log(`received: ${byteNormalize(prog)}`),
+      // progress: (prog: any) => console.log(`received: ${byteNormalize(prog)}`),
       chunker: 'size-6000000', // Best performance for large files
       // chunker: 'size-1000000',
       //   chunker: 'size-1000',

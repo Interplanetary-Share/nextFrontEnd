@@ -75,8 +75,7 @@ const useSocketInit = () => {
                 cid: cid,
               })
             );
-            const newFile = new File([blob], cid, { type: type });
-            dispatch(addFileToIPFS({ file: newFile }) as any);
+            dispatch(addFileToIPFS({ blob: blob }) as any);
           } else {
             const blob = new Blob(blobList);
             const url = URL.createObjectURL(blob);
@@ -86,8 +85,7 @@ const useSocketInit = () => {
                 cid: cid,
               })
             );
-            const newFile = new File([blob], cid);
-            dispatch(addFileToIPFS({ file: newFile }) as any);
+            dispatch(addFileToIPFS({ blob: blob }) as any);
           }
 
           blobList.length = 0;

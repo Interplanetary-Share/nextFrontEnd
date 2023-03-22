@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 interface ICardOptionsUpper {
   cid: string;
   name: string;
-  type: string | undefined;
+  type: string;
   link?: string; // link to the blob file
 }
 

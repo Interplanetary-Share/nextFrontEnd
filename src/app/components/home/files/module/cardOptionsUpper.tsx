@@ -63,7 +63,6 @@ const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
               handleReport({
                 id,
                 cid,
-                array: reports,
                 dispatch,
               })
             }

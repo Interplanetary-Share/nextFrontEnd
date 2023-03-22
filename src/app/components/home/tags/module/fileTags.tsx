@@ -32,7 +32,7 @@ const FileTags = () => {
           mode,
         };
       })
-      .sort((a, b) => b.numberPosts - a.numberPosts);
+      .sort((a: any, b: any) => b.numberPosts - a.numberPosts);
   }, [list]);
 
   const size = useWindowsSize();

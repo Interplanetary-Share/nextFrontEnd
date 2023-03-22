@@ -11,9 +11,7 @@ const useInitIpfs = () => {
 
     dispatch(initIpfs() as any)
       .unwrap()
-      .then((res: any) => {
-        toast.info('IPFS node started', { autoClose: 3000 });
-      });
+      .then((res: any) => {});
     return () => {
       console.log('Closing IPFS');
       const windowObj = window as any;

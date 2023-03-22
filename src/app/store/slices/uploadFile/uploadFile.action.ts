@@ -78,7 +78,7 @@ export const fetchUploadFileReducer = {
 };
 
 export const checkFileIsOnTheServer = createAsyncThunk(
-  'uploadFile/fetchUploadFile',
+  'uploadFile/checkFileIsOnTheServer',
   async (data: { cid: string }, { rejectWithValue, getState }) => {
     const { cid } = data;
 
@@ -112,5 +112,45 @@ export const checkFileIsOnTheServerReducer = {
   ) => {
     state.checkFileIsOnTheServer.loading = false;
     state.checkFileIsOnTheServer.error = action.error.message;
+  },
+};
+
+export const fetchUpdateIntegrityFile = createAsyncThunk(
+  'uploadFile/fetchUpdateIntegrityFile',
+  async (data: { file: File }, { rejectWithValue, getState }) => {
+    const { file } = data;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    axios
+      .post(apiFileUpload, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(`fastlog =>fetchUpdateIntegrityFile  res:`, res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+);
+export const fetchUpdateIntegrityFileReducer = {
+  [fetchUpdateIntegrityFile.pending as any]: (state: IUploadFile) => {
+    state.fetchUpdateIntegrityFile.loading = true;
+  },
+  [fetchUpdateIntegrityFile.fulfilled as any]: (
+    state: IUploadFile,
+    action: any
+  ) => {
+    state.fetchUpdateIntegrityFile.loading = false;
+  },
+  [fetchUpdateIntegrityFile.rejected as any]: (
+    state: IUploadFile,
+    action: any
+  ) => {
+    state.fetchUpdateIntegrityFile.loading = false;
+    state.fetchUpdateIntegrityFile.error = action.error.message;
   },
 };

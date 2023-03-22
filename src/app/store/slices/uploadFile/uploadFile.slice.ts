@@ -30,6 +30,11 @@ export interface IUploadFile {
     loading: boolean;
     error: string;
   };
+
+  fetchUpdateIntegrityFile: {
+    loading: boolean;
+    error: string;
+  };
 }
 
 const initialState: IUploadFile = {
@@ -55,6 +60,11 @@ const initialState: IUploadFile = {
     error: '',
   },
   checkFileIsOnTheServer: {
+    loading: false,
+    error: '',
+  },
+
+  fetchUpdateIntegrityFile: {
     loading: false,
     error: '',
   },

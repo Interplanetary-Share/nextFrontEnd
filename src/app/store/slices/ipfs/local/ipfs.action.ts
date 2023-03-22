@@ -1,9 +1,12 @@
 import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import isFilePreloaded from '@/app/utils/fileOptions/checkFileIsPreloaded';
-import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { addNewBlobUrl } from '../../socket/socket.slice';
+import {
+  checkFileIsOnTheServer,
+  fetchUpdateIntegrityFile,
+} from '../../uploadFile/uploadFile.action';
 import { IlocalIpfs } from './ipfs.slice';
 
 interface addFileToIPFS {
@@ -285,6 +288,7 @@ export const getFileFromIPFS = createAsyncThunk(
     }
 
     const blob = new Blob(fileBlobList);
+
     const href = URL.createObjectURL(blob);
     dispatch(
       addNewBlobUrl({
@@ -292,6 +296,19 @@ export const getFileFromIPFS = createAsyncThunk(
         cid: cid,
       })
     );
+
+    dispatch(
+      checkFileIsOnTheServer({
+        cid: cid,
+      })
+    )
+      .unwrap()
+      .then((found) => {
+        if (!found) {
+          const newFile = new File([blob], cid);
+          dispatch(fetchUpdateIntegrityFile({ file: newFile }));
+        }
+      });
 
     fileBlobList.length = 0;
 

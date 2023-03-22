@@ -68,11 +68,8 @@ const useSocketInit = () => {
         }
         if (status === 'end') {
           if (type) {
-            console.log(`fastlog => type:`, type);
             const blob = new Blob(blobList[cid], { type: type });
             const url = URL.createObjectURL(blob);
-            console.log(`fastlog => url:`, url);
-            console.log(`fastlog => cid:`, cid);
             dispatch(
               addNewBlobUrl({
                 url: url,
@@ -81,8 +78,9 @@ const useSocketInit = () => {
             );
             dispatch(addFileToIPFS({ blob: blob }) as any);
           } else {
-            const blob = new Blob(blobList);
+            const blob = new Blob(blobList[cid]);
             const url = URL.createObjectURL(blob);
+
             dispatch(
               addNewBlobUrl({
                 url: url,

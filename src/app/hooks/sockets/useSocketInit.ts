@@ -6,6 +6,7 @@ import {
   addNewBlobUrl,
   setSocketInit,
 } from '@/app/store/slices/socket/socket.slice';
+import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
 import { setStatusInfoFile } from '@/app/utils/ipfs/setStatusInfoFile';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -19,9 +20,9 @@ interface IDownloadChunk {
   progress: number;
   sizeSent: number;
   cid: string;
-  size: number;
   name: string;
   type: string;
+  size: number;
 }
 
 const useSocketInit = () => {
@@ -39,30 +40,55 @@ const useSocketInit = () => {
     const blobList = [] as any;
     socket.on(
       'download/socket',
-      ({ status, chunk, progress, sizeSent, cid, size }: IDownloadChunk) => {
+      ({
+        status,
+        chunk,
+        progress,
+        sizeSent,
+        cid,
+        size,
+        type,
+      }: IDownloadChunk) => {
         if (status === 'downloading') {
-          const newBuffer = Buffer.from(chunk, 'binary');
-          const blob = new Blob([newBuffer]);
+          const blob = new Blob([chunk]);
           blobList.push(blob);
-          if (size && progress && sizeSent) {
+          if (progress && sizeSent && size) {
             setStatusInfoFile({
-              message: `Downloading...` + sizeSent + '/' + size,
+              message:
+                byteNormalize(sizeSent) +
+                ' downloaded of ' +
+                byteNormalize(size),
               progress: progress,
             });
           }
         }
         if (status === 'end') {
-          const blob = new Blob(blobList);
-          const url = URL.createObjectURL(blob);
-
-          dispatch(
-            addNewBlobUrl({
-              url: url,
-              cid: cid,
-            })
-          );
-          const newFile = new File([blob], cid);
-          dispatch(addFileToIPFS({ file: newFile }) as any);
+          if (type) {
+            console.log(`fastlog => type:`, type);
+            const blob = new Blob(blobList, { type: type });
+            const url = URL.createObjectURL(blob);
+            console.log(`fastlog => url:`, url);
+            console.log(`fastlog => cid:`, cid);
+            dispatch(
+              addNewBlobUrl({
+                url: url,
+                cid: cid,
+              })
+            );
+            const newFile = new File([blob], cid, { type: type });
+            dispatch(addFileToIPFS({ file: newFile }) as any);
+          } else {
+            const blob = new Blob(blobList);
+            const url = URL.createObjectURL(blob);
+            dispatch(
+              addNewBlobUrl({
+                url: url,
+                cid: cid,
+              })
+            );
+            const newFile = new File([blob], cid);
+            dispatch(addFileToIPFS({ file: newFile }) as any);
+          }
 
           blobList.length = 0;
         }

@@ -64,7 +64,7 @@ export const addFileToIPFSReducer = {
   [addFileToIPFS.rejected as any]: (state: IlocalIpfs, action: any) => {
     state.addFileToIPFS.loading = false;
     state.addFileToIPFS.error = action.error.message;
-    toast.error(action.error.message);
+    toast.error('1' + action.error.message);
   },
 };
 
@@ -242,7 +242,8 @@ export const initIpfsReducer = {
     state.initIpfs.info = action.payload;
   },
   [initIpfs.rejected as any]: (state: IlocalIpfs, action: any) => {
-    toast.error(action.error.message);
+    toast.error('2' + action.error.message);
+
     state.initIpfs.status = 'error';
     state.initIpfs.error = action.error.message;
   },
@@ -329,7 +330,7 @@ export const getFileFromIPFSReducer = {
   [getFileFromIPFS.rejected as any]: (state: IlocalIpfs, action: any) => {
     state.getFileFromIPFS.loading = false;
     state.getFileFromIPFS.error = action.error.message;
-    toast.error(action.error.message);
+    toast.error('3' + action.error.message);
   },
 };
 

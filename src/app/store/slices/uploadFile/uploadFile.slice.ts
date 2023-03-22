@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUploadFileReducer } from './uploadFile.action';
+import {
+  checkFileIsOnTheServerReducer,
+  fetchUploadFileReducer,
+} from './uploadFile.action';
 
 export interface IUploadFile {
   name: string;
@@ -20,6 +23,10 @@ export interface IUploadFile {
   };
 
   fetchUploadFile: {
+    loading: boolean;
+    error: string;
+  };
+  checkFileIsOnTheServer: {
     loading: boolean;
     error: string;
   };
@@ -44,6 +51,10 @@ const initialState: IUploadFile = {
   },
 
   fetchUploadFile: {
+    loading: false,
+    error: '',
+  },
+  checkFileIsOnTheServer: {
     loading: false,
     error: '',
   },
@@ -91,6 +102,7 @@ const uploadFileSlice = createSlice({
   },
   extraReducers: {
     ...fetchUploadFileReducer,
+    ...checkFileIsOnTheServerReducer,
   },
 });
 

@@ -5,6 +5,7 @@ export const apiFileUpload = apiHostname + fileController + '/upload/';
 export const apiFiles = apiHostname + fileController + '/files/';
 export const apiDownload = apiHostname + fileController + '/download/';
 export const apiFilesStats = apiHostname + fileController + '/stats/';
+export const apiFileCheck = apiHostname + fileController + '/check/';
 
 const userController = '/user';
 export const apiUserCreate = apiHostname + userController + '/create/';
@@ -30,5 +31,4 @@ const reportController = '/report';
 export const apiReportCreate = apiHostname + reportController + '/create/';
 export const apiReportDelete = apiHostname + reportController + '/delete/';
 
-
-export const defaultGateway = apiHostname+ fileController + '/get/';
+export const defaultGateway = apiHostname + fileController + '/get/';

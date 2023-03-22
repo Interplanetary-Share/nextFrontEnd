@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IUploadFile } from './uploadFile.slice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { apiFileUpload } from '../../endpoints';
+import { apiFileCheck, apiFileUpload } from '../../endpoints';
 
 export const fetchUploadFile = createAsyncThunk(
   'uploadFile/fetchUploadFile',
@@ -74,5 +74,43 @@ export const fetchUploadFileReducer = {
     toast.error('Error uploading file');
     state.fetchUploadFile.loading = false;
     state.fetchUploadFile.error = action.error.message;
+  },
+};
+
+export const checkFileIsOnTheServer = createAsyncThunk(
+  'uploadFile/fetchUploadFile',
+  async (data: { cid: string }, { rejectWithValue, getState }) => {
+    const { cid } = data;
+
+    if (!cid) {
+      return rejectWithValue('cid is required');
+    }
+
+    return await axios
+      .get(apiFileCheck + cid)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return rejectWithValue(err.response.data);
+      });
+  }
+);
+export const checkFileIsOnTheServerReducer = {
+  [checkFileIsOnTheServer.pending as any]: (state: IUploadFile) => {
+    state.checkFileIsOnTheServer.loading = true;
+  },
+  [checkFileIsOnTheServer.fulfilled as any]: (
+    state: IUploadFile,
+    action: any
+  ) => {
+    state.checkFileIsOnTheServer.loading = false;
+  },
+  [checkFileIsOnTheServer.rejected as any]: (
+    state: IUploadFile,
+    action: any
+  ) => {
+    state.checkFileIsOnTheServer.loading = false;
+    state.checkFileIsOnTheServer.error = action.error.message;
   },
 };

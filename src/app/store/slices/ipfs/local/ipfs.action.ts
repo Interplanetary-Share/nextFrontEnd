@@ -10,15 +10,15 @@ import {
 import { IlocalIpfs } from './ipfs.slice';
 
 interface addFileToIPFS {
-  file: File | null;
+  blob: Blob;
 }
 
 export const addFileToIPFS = createAsyncThunk(
   'infoFile/fetchAddFileToIPFS',
   async (data: addFileToIPFS, { rejectWithValue, getState }) => {
-    const { file } = data;
+    const { blob } = data;
 
-    if (!file) return rejectWithValue('File is null');
+    if (!blob) return rejectWithValue('Blob is null');
 
     const windowObj = window as any;
 
@@ -28,16 +28,7 @@ export const addFileToIPFS = createAsyncThunk(
     const ipfs = windowObj.ipfsServer;
     if (!ipfs) return rejectWithValue('IPFS server is not running');
 
-    // THIUS WORKS ONM NEW SCREEN AND  NEW WINDOW
-    // const stream = file.stream().tee();
-    const stream = file.stream();
-
-    // toast.info('Saving file to local IPFS...', {
-    //   toastId: 'uploadingFileToIPFS',
-    //   autoClose: 3000,
-    // });
-
-    const infoFile = await ipfs.add(stream, {
+    const infoFile = await ipfs.add(blob, {
       // progress: (prog: any) => console.log(`received: ${byteNormalize(prog)}`),
       chunker: 'size-6000000', // Best performance for large files
       // chunker: 'size-1000000',

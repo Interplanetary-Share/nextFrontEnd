@@ -37,7 +37,7 @@ const useSocketInit = () => {
     const socket = io(apiHostname as string);
     setsocket(socket);
 
-    const blobList = [] as any;
+    const blobList = {} as any;
     socket.on(
       'download/socket',
       ({
@@ -49,9 +49,13 @@ const useSocketInit = () => {
         size,
         type,
       }: IDownloadChunk) => {
+        if (status === 'start') {
+          blobList[cid] = [];
+        }
         if (status === 'downloading') {
           const blob = new Blob([chunk]);
-          blobList.push(blob);
+          blobList[cid].push(blob);
+
           if (progress && sizeSent && size) {
             setStatusInfoFile({
               message:
@@ -65,7 +69,7 @@ const useSocketInit = () => {
         if (status === 'end') {
           if (type) {
             console.log(`fastlog => type:`, type);
-            const blob = new Blob(blobList, { type: type });
+            const blob = new Blob(blobList[cid], { type: type });
             const url = URL.createObjectURL(blob);
             console.log(`fastlog => url:`, url);
             console.log(`fastlog => cid:`, cid);
@@ -88,7 +92,7 @@ const useSocketInit = () => {
             dispatch(addFileToIPFS({ blob: blob }) as any);
           }
 
-          blobList.length = 0;
+          blobList[cid] = [];
         }
       }
     );

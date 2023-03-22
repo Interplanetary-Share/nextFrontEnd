@@ -14,13 +14,14 @@ import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
 
 interface IDownloadChunk {
-  chunk: any;
-  cid: string;
   status: string;
-  file: any;
+  chunk: any;
   progress: number;
   sizeSent: number;
-  chunkNumber: number;
+  cid: string;
+  size: number;
+  name: string;
+  type: string;
 }
 
 const useSocketInit = () => {
@@ -38,23 +39,12 @@ const useSocketInit = () => {
     const blobList = [] as any;
     socket.on(
       'download/socket',
-      ({
-        chunk,
-        status,
-        file,
-        progress,
-        sizeSent,
-        chunkNumber,
-      }: IDownloadChunk) => {
-        // if (status === 'start') {
-        // }
+      ({ status, chunk, progress, sizeSent, cid, size }: IDownloadChunk) => {
         if (status === 'downloading') {
-          const blob = new Blob([chunk]);
-
+          const newBuffer = Buffer.from(chunk, 'binary');
+          const blob = new Blob([newBuffer]);
           blobList.push(blob);
-          const { size } = file;
-
-          if (cid && cid === file.cid) {
+          if (size && progress && sizeSent) {
             setStatusInfoFile({
               message: `Downloading...` + sizeSent + '/' + size,
               progress: progress,
@@ -63,16 +53,17 @@ const useSocketInit = () => {
         }
         if (status === 'end') {
           const blob = new Blob(blobList);
-          const newFile = new File([blob], file.name, { type: file.type });
           const url = URL.createObjectURL(blob);
-          dispatch(addFileToIPFS({ file: newFile }) as any);
 
           dispatch(
             addNewBlobUrl({
               url: url,
-              cid: file.cid,
+              cid: cid,
             })
           );
+          const newFile = new File([blob], cid);
+          dispatch(addFileToIPFS({ file: newFile }) as any);
+
           blobList.length = 0;
         }
       }

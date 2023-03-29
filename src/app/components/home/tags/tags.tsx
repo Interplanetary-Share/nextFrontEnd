@@ -8,8 +8,8 @@ const Tags = () => {
 
   return (
     <>
-      <div className="navbar bg-base-100">
-        <div className="grid grid-cols-1  w-full md:flex-1 md:flex justify-center">
+      <div className="navbar bg-neutral">
+        <div className="grid grid-cols-1  w-full md:flex-1 md:flex justify-center px-4  bg-base ">
           <DefaultTags />
         </div>
       </div>

@@ -15,8 +15,8 @@ const Search = () => {
   };
 
   return (
-    <div className="form-control w-full p-4">
-      <div className="input-group  input-group-lg">
+    <div className="form-control w-full p-4 bg-neutral">
+      <div className="input-group input-group-lg bg-secondary p-4 mb-4 rounded-lg ">
         <input
           type="text"
           defaultValue={filters.searchStr}

@@ -16,6 +16,7 @@ const FileTags = () => {
     return list
       .map((tag: any) => {
         const { _id, name, numberPosts, mode } = tag;
+
         return {
           id: _id,
           name,
@@ -24,7 +25,7 @@ const FileTags = () => {
             dispatch(
               setFiltersBasicList({
                 tags: [mode],
-                mode: mode,
+                mode: mode, // only affects style
                 sortMode: 'likes',
               })
             );
@@ -76,19 +77,11 @@ const FileTags = () => {
     <>
       <div
         ref={tagsContainer}
-        className="grid h-72 md:h-32 carousel carousel-vertical rounded-box w-full mx-auto"
+        className="grid bg-base-100 h-72 md:h-32 carousel carousel-vertical rounded-box w-full mx-auto"
       >
         {tagsPerPage.map((tags, index) => {
           return <CustomBadge key={index} tags={tags} />;
         })}
-      </div>
-      <div className="grid grid-cols-1 mx-4 ">
-        <div className="flex justify-center">
-          <kbd className="kbd">▲</kbd>
-        </div>
-        <div className="flex justify-center">
-          <kbd className="kbd">▼</kbd>
-        </div>
       </div>
     </>
   );

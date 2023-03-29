@@ -13,7 +13,7 @@ const Tags = () => {
           <DefaultTags />
         </div>
       </div>
-      <div className="flex">
+      <div className="flex bg-neutral p-4">
         <FileTags />
       </div>
     </>

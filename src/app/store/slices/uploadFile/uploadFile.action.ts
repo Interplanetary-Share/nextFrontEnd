@@ -3,6 +3,7 @@ import { IUploadFile } from './uploadFile.slice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { apiFileCheck, apiFileUpload } from '../../endpoints';
+import { normalizeText } from 'normalize-text';
 
 export const fetchUploadFile = createAsyncThunk(
   'uploadFile/fetchUploadFile',
@@ -11,7 +12,7 @@ export const fetchUploadFile = createAsyncThunk(
     const { user } = getState() as any;
     const { id } = user;
     const { name, description, tags, type, nativeFile } = uploadFile;
-
+    const normalizeTag = normalizeText(tags).trim().replace(/ /g, '-');
     // axios upload  multipart
     const formData = new FormData();
     formData.append('file', nativeFile.file);
@@ -50,7 +51,7 @@ export const fetchUploadFile = createAsyncThunk(
         cid: cidFile,
         name: name,
         description: description,
-        tags: tags,
+        tags: normalizeTag,
         size: sizeFile,
         type: type,
         cover: cidCover,

@@ -24,7 +24,7 @@ const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
 
   return (
     <div>
-      <div className="btn-group  mt-2 w-full mx-auto justify-end">
+      <div className="btn-group  mt-2 w-full mx-auto justify-end absolute">
         <div
           onClick={() =>
             handleShareFile({

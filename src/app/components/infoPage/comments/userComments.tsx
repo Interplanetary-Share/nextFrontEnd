@@ -51,7 +51,7 @@ const UserComments = () => {
               <li key={comment._id} className="py-4">
                 <div className="flex space-x-3">
                   <img
-                    className="h-32 w-32 rounded-full"
+                    className="h-14 w-14 md:h-24 md:w-24 lg:w-32 lg:h-32 rounded-full"
                     src={comment.coverImg}
                     alt=""
                     referrerPolicy="no-referrer"

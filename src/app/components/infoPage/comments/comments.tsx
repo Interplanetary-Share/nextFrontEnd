@@ -67,9 +67,9 @@ const Comments = () => {
   return (
     <>
       <div className="bg-secondary rounded-lg md:w-2/3 ">
-        <div className="ml-4 p-4 h-50 pb-0 mb-0 flex gap-4">
-          <div className="w-32 mt-8">
-            <Avatar size=" w-32 h-32 " />
+        <div className=" p-4 h-50 pb-0 mb-0 grid mx-auto md:flex gap-4 justify-center">
+          <div className="w-16 md:w-32 mt-8">
+            <Avatar size=" w-16 h-16  md:w-32 md:h-32  " />
           </div>
           <div className="w-full h-full">
             <Editor

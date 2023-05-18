@@ -13,7 +13,10 @@ export const fetchUploadFile = createAsyncThunk(
     const { id } = user;
     const { name, description, tags, type, nativeFile } = uploadFile;
 
-    const normalizedTags = normalizeText(tags).trim().replace(/ /g, '-');
+    const normalizedTags = tags.map((tag: string) => {
+      return normalizeText(tag).trim().replace(/ /g, '-');
+    });
+
     // axios upload  multipart
     const formData = new FormData();
     formData.append('file', nativeFile.file);

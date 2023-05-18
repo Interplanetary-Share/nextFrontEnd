@@ -12,7 +12,8 @@ export const fetchUploadFile = createAsyncThunk(
     const { user } = getState() as any;
     const { id } = user;
     const { name, description, tags, type, nativeFile } = uploadFile;
-    const normalizeTag = normalizeText(tags).trim().replace(/ /g, '-');
+
+    const normalizedTags = normalizeText(tags).trim().replace(/ /g, '-');
     // axios upload  multipart
     const formData = new FormData();
     formData.append('file', nativeFile.file);
@@ -51,7 +52,7 @@ export const fetchUploadFile = createAsyncThunk(
         cid: cidFile,
         name: name,
         description: description,
-        tags: normalizeTag,
+        tags: normalizedTags,
         size: sizeFile,
         type: type,
         cover: cidCover,

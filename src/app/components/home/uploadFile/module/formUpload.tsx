@@ -8,6 +8,7 @@ const FormUpload = () => {
   const dispatch = useDispatch();
   const [fileTags, setfileTags] = useState([]);
 
+  // TODO: Start normalization tags, to  avoid weird tags
   useEffect(() => {
     dispatch(setFileInfo({ tags: fileTags }));
   }, [fileTags]);

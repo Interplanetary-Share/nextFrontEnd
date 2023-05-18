@@ -23,6 +23,7 @@ const UploadFile = () => {
     if (
       !name ||
       !description ||
+      !tags ||
       tags.length === 0 ||
       !nativeFile ||
       !nativeFile.file ||

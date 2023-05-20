@@ -68,18 +68,18 @@ const useSocketInit = () => {
         }
         if (status === 'end') {
           if (type) {
-            const blob = new Blob(blobList[cid], { type: type });
-            const url = URL.createObjectURL(blob);
+            const temporalBlobFile = new Blob(blobList[cid], { type: type });
+            const url = URL.createObjectURL(temporalBlobFile);
             dispatch(
               addNewBlobUrl({
                 url: url,
                 cid: cid,
               })
             );
-            dispatch(addFileToIPFS({ blob: blob }) as any);
+            dispatch(addFileToIPFS({ blob: temporalBlobFile }) as any);
           } else {
-            const blob = new Blob(blobList[cid]);
-            const url = URL.createObjectURL(blob);
+            const temporalBlobFile = new Blob(blobList[cid]);
+            const url = URL.createObjectURL(temporalBlobFile);
 
             dispatch(
               addNewBlobUrl({
@@ -87,7 +87,7 @@ const useSocketInit = () => {
                 cid: cid,
               })
             );
-            dispatch(addFileToIPFS({ blob: blob }) as any);
+            dispatch(addFileToIPFS({ blob: temporalBlobFile }) as any);
           }
 
           blobList[cid] = [];

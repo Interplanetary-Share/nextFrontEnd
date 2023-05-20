@@ -10,7 +10,7 @@ import {
 import { IlocalIpfs } from './ipfs.slice';
 
 interface addFileToIPFS {
-  blob: Blob;
+  blob: any;
 }
 
 export const addFileToIPFS = createAsyncThunk(
@@ -28,17 +28,25 @@ export const addFileToIPFS = createAsyncThunk(
     const ipfs = windowObj.ipfsServer;
     if (!ipfs) return rejectWithValue('IPFS server is not running');
 
-    const infoFile = await ipfs.add(blob, {
-      // progress: (prog: any) => console.log(`received: ${byteNormalize(prog)}`),
-      // chunker: 'size-6000000', // Best performance for large files
-      chunker: 'size-3000000', // HAD SOME PROBLEMS WITH PHONES
-      //   chunker: 'size-1000',
-      onlyHash: false,
-      pin: true,
-      wrapWithDirectory: false,
-    });
+    const infoFile = await ipfs
+      .add(blob, {
+        // chunker: 'size-6000000', // Best performance for large files
+        chunker: 'size-3000000', // HAD SOME PROBLEMS WITH PHONES
+        // chunker: 'size-1000',
+        onlyHash: false,
+        pin: true,
+        wrapWithDirectory: false,
+      })
+      .catch((err: any) => {
+        toast.error('1-1' + err.message);
+        toast.error('1-2' + err.stack);
 
-    const cid = infoFile.cid.toString();
+        return rejectWithValue(err);
+      });
+
+    if (!infoFile) return rejectWithValue('InfoFile is null');
+
+    const cid = infoFile.cid?.toString();
     return cid;
   }
 );

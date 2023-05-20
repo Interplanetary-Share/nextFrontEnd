@@ -30,8 +30,8 @@ export const addFileToIPFS = createAsyncThunk(
 
     const infoFile = await ipfs
       .add(blob, {
-        // chunker: 'size-6000000', // Best performance for large files
-        chunker: 'size-3000000', // HAD SOME PROBLEMS WITH PHONES
+        chunker: 'size-6000000', // Best performance for large files
+        // chunker: 'size-3000000', // HAD SOME PROBLEMS WITH PHONES
         // chunker: 'size-1000',
         onlyHash: false,
         pin: true,

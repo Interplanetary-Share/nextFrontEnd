@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:dev": "npm run dev",
     "startSSL": "npx local-ssl-proxy --source 3001 --target 3000",
     "lint": "next lint"
   },
   "dependencies": {
+    "@interplanetary-share/hooks.ipfs-client": "0.0.0-25751810654b88752d01844ed39a7a5ca5aacee3",
     "@libp2p/websockets": "^5.0.3",
     "@next/font": "13.1.6",
     "@reduxjs/toolkit": "^1.9.3",
@@ -39,8 +41,6 @@
     "redux": "^4.2.1",
     "redux-localstorage-simple": "^2.5.1",
     "redux-persist": "^6.0.0",
-    "remote-file-info": "^1.0.1",
-    "socket.io-client": "^4.6.1",
     "stream-to-blob": "^2.0.1",
     "typescript": "4.9.5"
   },

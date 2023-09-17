@@ -36,7 +36,7 @@
     "react-pdf": "^6.2.2",
     "react-redux": "^8.0.5",
     "react-tag-input-component": "^2.0.2",
-    "react-three": "^0.9.7",
+    "react-three": "^0.8.0",
     "react-toastify": "^9.1.1",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",

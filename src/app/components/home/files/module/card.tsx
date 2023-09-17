@@ -1,59 +1,81 @@
-/* eslint-disable @next/next/no-img-element */
-import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
-import Link from 'next/link';
-import { useRef } from 'react';
-import CardOptionsUpper from './cardOptionsUpper';
-import CardStats from './cardStats';
+import { useMemo, useRef, useState } from 'react'
 
-interface CardProps {
-  name: string;
-  description: string;
-  cid: string;
-  cover?: string;
-  link?: string;
-  date?: string;
-  size?: string;
-  type: string;
-  likes?: [string];
-  dislikes?: [string];
-  reports?: [string];
-  favorites?: [string];
-}
+import CardOptionsUpper from './cardOptionsUpper'
+import CardStats from './cardStats'
+import { IFileRetrievalResponse } from '@interplanetary-share/hooks.ipfs-client/types/file'
+import Link from 'next/link'
+import { ipfsGalactFetchClient } from '@interplanetary-share/hooks.ipfs-client'
 
-const Card = ({
-  name,
-  description,
-  cover,
-  cid,
-  link,
-  date,
-  size,
-  type,
-  likes,
-  dislikes,
-  reports,
-  favorites,
-}: CardProps) => {
-  const image = useGetBlobUrl(cover); //ESTO TRAE LA IMAGEN DE IPFS
-  const buttonRef = useRef(null);
+const Card = (props: IFileRetrievalResponse) => {
+  const { cid, name, description, type, extraProperties } = props
+  const { getFile } = ipfsGalactFetchClient()
+
+  const likes = useMemo(() => {
+    if (extraProperties?.likes) {
+      return extraProperties.likes as string[]
+    }
+    return undefined
+  }, [extraProperties])
+
+  const dislikes = useMemo(() => {
+    if (extraProperties?.dislikes) {
+      return extraProperties.dislikes as string[]
+    }
+    return undefined
+  }, [extraProperties])
+
+  const favorites = useMemo(() => {
+    if (extraProperties?.favorites) {
+      return extraProperties.favorites as string[]
+    }
+    return undefined
+  }, [extraProperties])
+
+  const cover = useMemo(() => {
+    if (extraProperties?.cover) {
+      return extraProperties.cover as string
+    }
+    return undefined
+  }, [extraProperties])
+
+  const [image, setImage] = useState('/home/space.gif')
+
+  useMemo(() => {
+    const mainFileIsImage = type?.includes('image')
+    if (mainFileIsImage) {
+      getFile(cid, {
+        showBlobUrl: true,
+        showExtraProps: false,
+        showInfoFile: false,
+      }).then((file: IFileRetrievalResponse) => {
+        if (!file) return
+        if (file.url) setImage(file.url)
+      })
+    } else {
+      if (cover) {
+        setImage(cover)
+      }
+    }
+  }, [])
+
+  const buttonRef = useRef(null)
   return (
-    <div className="card card-compact bg-secondary shadow-xl">
-      <CardOptionsUpper
-        cid={cid}
-        name={name}
-        type={type}
-        // link={link}
-      />
+    <div className="card card-compact bg-secondary shadow-xl mt-2">
+      <CardOptionsUpper cid={cid} name={name} type={type} />
       <div
         style={{
           backgroundImage: `url(${image})`,
           backgroundPosition: 'center',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          margin: '0.3em',
+          borderRadius: '2em',
         }}
         className="h-72 px-4 cursor-pointer"
         onClick={() => {
           if (buttonRef.current) {
-            const button = buttonRef.current as any;
-            button.click();
+            const button = buttonRef.current as any
+            button.click()
           }
         }}
       ></div>
@@ -61,19 +83,19 @@ const Card = ({
         <h2 className="card-title overflow-hidden">{name}</h2>
         <p>{description}</p>
         <CardStats
-          cid={cid}
-          likes={likes}
-          dislikes={dislikes}
-          favorites={favorites}
+          {...{
+            cid,
+            likes,
+            dislikes,
+            favorites,
+          }}
         />
         <div className="card-actions justify-center gap-4">
-          <Link href={'/' + cid} ref={buttonRef}>
-            <button className="btn btn-primary">View</button>
-          </Link>
+          <Link href={'/' + cid} ref={buttonRef}></Link>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Card;
+export default Card

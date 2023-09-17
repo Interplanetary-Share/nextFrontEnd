@@ -1,37 +1,30 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import allFilesSlice from './slices/files/allFiles.slice';
-import infoFileSlice from './slices/infoFile/infoFile.slice';
-import uploadFileSlice from './slices/uploadFile/uploadFile.slice';
-import userSlice from './slices/user/user.slice';
-import tagsSlice from './slices/tags/tags.slice';
-import socketSlice from './slices/socket/socket.slice';
-import localIpfs from './slices/ipfs/local/ipfs.slice';
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
+import allFilesSlice from './slices/files/query.slice'
+import infoFileSlice from './slices/infoFile/infoFile.slice'
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import uploadFileSlice from './slices/uploadFile/uploadFile.slice'
+import userSlice from './slices/user/user.slice'
 
 const persistConfig = {
   key: 'intershare',
   storage,
   // whitelist: ['uploadFile'],
   // blacklist: ['infoFile'],
-};
+}
 
 const rootReducer = {
   uploadFile: uploadFileSlice,
   infoFile: infoFileSlice,
-  allFiles: allFilesSlice,
-  user: userSlice,
-  ipfs: combineReducers({
-    local: localIpfs,
-  }),
-  tags: tagsSlice,
-  socket: socketSlice,
-};
+  allFiles: allFilesSlice, //TODO
+  user: userSlice, //TODO
+}
 
 const persistedReducer = persistReducer(
   persistConfig,
   combineReducers(rootReducer)
-);
+)
 
 const store = configureStore({
   reducer: persistedReducer,
@@ -56,8 +49,8 @@ const store = configureStore({
       test: false,
     },
   },
-});
+})
 
 // export const persistor = persistStore(store);
 
-export default store;
+export default store

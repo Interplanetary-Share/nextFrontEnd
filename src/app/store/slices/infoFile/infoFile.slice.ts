@@ -1,202 +1,68 @@
-import { createSlice } from '@reduxjs/toolkit';
-import {
-  fetchDownloadFileReducer,
-  fetchInfoFileFromDbReducer,
-  fetchStatsCurrentFileReducer,
-} from './infoFile.action';
-import {
-  fetchCreateCommentReducer,
-  fetchDeleteCommentReducer,
-  fetchGetCommentsReducer,
-} from './infoFileComments.action';
-import {
-  fetchCreateOrUpdateReportReducer,
-  fetchDeleteReportReducer,
-} from './infoFileReports.action';
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface IComments {
-  _id: string;
-  userId: string;
-  comment: string;
-  date: string;
-  likes: string[];
-  dislikes: string[];
-  reports: string[];
-  coverImg: string;
-  displayName: string;
-}
-interface ILikes {
-  userId: string;
-  date: string;
-}
-interface IDislikes {
-  userId: string;
-  date: string;
-}
-interface IFavorites {
-  userId: string;
-  date: string;
-}
-interface IReports {
-  _id: string;
-  userId: string;
-  date: string;
-  reasons: Array<string>;
-  comments: string;
+  id: string
+  userId: string
+  comment: string
+  date: string
+  likes: string[]
+  coverImg: string
+  displayName: string
 }
 
 export interface IInfoFile {
-  cid: string;
-  size: number;
-  type: string;
-  lastModified: number;
+  cid: string
+  name: string
+  description: string
+  type: string
+  size: number
+  isPublic: boolean
+  updatedAt: string
+  createdAt: string
 
-  // db
-  name: string;
-  description: string;
-  tags: string[];
-  cover: string;
-  date: string;
+  url?: string
+  extraProperties?: Record<string, unknown>
 
-  likes: string[];
-  dislikes: string[];
-  favorites: string[];
-
-  reports: IReports[];
-
-  comments: IComments[];
-
-  owner: string;
-
-  found: boolean;
-
-  fetchInfoFileFromDb: {
-    loading: boolean;
-    error: string;
-  };
-  fetchDownloadFile: {
-    loading: boolean;
-    error: string;
-  };
-  fetchStatsCurrentFile: {
-    loading: boolean;
-    error: string;
-  };
-  fetchFileData: {
-    loading: boolean;
-    error: string;
-  };
-  fetchCoverData: {
-    loading: boolean;
-    error: string;
-  };
-  fetchCreateComment: {
-    loading: boolean;
-    error: string;
-  };
-  fetchDeleteComment: {
-    loading: boolean;
-    error: string;
-  };
-  fetchGetComments: {
-    loading: boolean;
-    error: string;
-  };
-  fetchCreateOrUpdateReport: {
-    loading: boolean;
-    error: string;
-  };
-  fetchDeleteReport: {
-    loading: boolean;
-    error: string;
-  };
+  fileFound: boolean | undefined
 }
 
 const initialState: IInfoFile = {
   cid: '',
-  size: 0,
-  type: '',
-  lastModified: 0,
-  // db
   name: '',
   description: '',
-  tags: [],
-  cover: '',
-  date: '',
+  type: '',
+  size: 0,
+  isPublic: false,
+  updatedAt: '',
+  createdAt: '',
 
-  likes: [],
-  dislikes: [],
-  favorites: [],
-  reports: [],
-  comments: [],
-  owner: '',
+  url: '',
+  extraProperties: {},
 
-  found: true,
-
-  fetchInfoFileFromDb: {
-    loading: false,
-    error: '',
-  },
-  fetchDownloadFile: {
-    loading: false,
-    error: '',
-  },
-  fetchStatsCurrentFile: {
-    loading: false,
-    error: '',
-  },
-  fetchFileData: {
-    loading: false,
-    error: '',
-  },
-  fetchCoverData: {
-    loading: false,
-    error: '',
-  },
-  fetchCreateComment: {
-    loading: false,
-    error: '',
-  },
-  fetchDeleteComment: {
-    loading: false,
-    error: '',
-  },
-  fetchGetComments: {
-    loading: false,
-    error: '',
-  },
-  fetchCreateOrUpdateReport: {
-    loading: false,
-    error: '',
-  },
-  fetchDeleteReport: {
-    loading: false,
-    error: '',
-  },
-};
+  fileFound: undefined,
+}
 
 const infoFileSlice = createSlice({
   name: 'infoFile',
   initialState,
   reducers: {
-    setCidFile: (state, action) => {
-      state.cid = action.payload;
+    updateInfoFile: (state, action) => {
+      const data = action.payload
+      if (data.cid) state.cid = data.cid
+      if (data.name) state.name = data.name
+      if (data.description) state.description = data.description
+      if (data.type) state.type = data.type
+      if (data.size) state.size = data.size
+      if (data.isPublic) state.isPublic = data.isPublic
+      if (data.updatedAt) state.updatedAt = data.updatedAt
+      if (data.createdAt) state.createdAt = data.createdAt
+      if (data.url) state.url = data.url
+      if (data.extraProperties) state.extraProperties = data.extraProperties
+      if (data.fileFound) state.fileFound = data.fileFound
     },
   },
-  extraReducers: {
-    ...fetchInfoFileFromDbReducer,
-    ...fetchDownloadFileReducer,
-    ...fetchStatsCurrentFileReducer,
+})
 
-    ...fetchCreateCommentReducer,
-    ...fetchDeleteCommentReducer,
-    ...fetchGetCommentsReducer,
+export const { updateInfoFile } = infoFileSlice.actions
 
-    ...fetchCreateOrUpdateReportReducer,
-    ...fetchDeleteReportReducer,
-  },
-});
-
-export const { setCidFile } = infoFileSlice.actions;
-
-export default infoFileSlice.reducer;
+export default infoFileSlice.reducer

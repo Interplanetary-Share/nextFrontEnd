@@ -1,44 +1,44 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
-import Badge from '@/app/components/general/badge/badge';
-import useWindowsSize from '@/app/hooks/custom/useWindowsSize';
-import { setFiltersBasicList } from '@/app/store/slices/files/allFiles.slice';
-import numberNormalized from '@/app/utils/misc/numberNormalized';
-import { calculateTagsPerPage, ITag } from '@/app/utils/misc/tags';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { ITag, calculateTagsPerPage } from '@/app/utils/misc/tags'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import Badge from '@/app/components/general/badge/badge'
+import numberNormalized from '@/app/utils/misc/numberNormalized'
+import { setFileTags } from '@/app/store/slices/files/query.slice'
+import useWindowsSize from '@/app/hooks/custom/useWindowsSize'
 
 const FileTags = () => {
-  const { list } = useSelector((state: any) => state.tags);
-  const dispatch = useDispatch();
+  const { getFilesListResponse, selectedTags } = useSelector(
+    (state: any) => state.allFiles
+  )
+  const dispatch = useDispatch()
 
   const fileTags = useMemo(() => {
-    return list
-      .map((tag: any) => {
-        const { _id, name, numberPosts, mode } = tag;
+    return getFilesListResponse
+      .reduce((acc: any, file: any) => {
+        if (!file.extraProperties) return acc
+        if (!file.extraProperties.tags) return acc
 
-        return {
-          id: _id,
-          name,
-          numberPosts,
-          onClick: () => {
-            dispatch(
-              setFiltersBasicList({
-                tags: [mode],
-                mode: mode, // only affects style
-                sortMode: 'likes',
-              })
-            );
-          },
-          mode,
-        };
-      })
-      .sort((a: any, b: any) => b.numberPosts - a.numberPosts);
-  }, [list]);
+        const { tags = [] } = file.extraProperties
+        tags.forEach((tag: any) => {
+          const index = acc.findIndex((item: any) => item.name === tag)
+          if (index === -1) {
+            acc.push({
+              name: tag,
+              numberPosts: 1,
+            })
+          } else {
+            acc[index].numberPosts += 1
+          }
+        })
+        return acc
+      }, [])
+      .sort((a: any, b: any) => b.numberPosts - a.numberPosts)
+  }, [getFilesListResponse])
 
-  const size = useWindowsSize();
-  const tagsContainer = useRef() as React.RefObject<HTMLInputElement>;
-  const [tagsPerPage, setTagsPerPage] = useState([] as Array<Array<ITag>>);
+  const size = useWindowsSize()
+  const tagsContainer = useRef() as React.RefObject<HTMLInputElement>
+  const [tagsPerPage, setTagsPerPage] = useState([] as Array<Array<ITag>>)
 
   useEffect(() => {
     setTagsPerPage(
@@ -47,31 +47,41 @@ const FileTags = () => {
         maxWith: tagsContainer.current?.clientWidth,
         tags: fileTags,
       })
-    );
-  }, [size, fileTags]);
+    )
+  }, [size, fileTags])
 
   const CustomBadge = (props: { tags?: Array<ITag> | undefined }) => {
-    const { tags = [] } = props;
-
-    if (!tags.length) return <></>;
+    const { tags = [] } = props
 
     return (
       <div className="carousel-item h-32 flex justify-center pt-10">
         {tags.map((tag) => {
-          const { id, name, numberPosts, mode, onClick } = tag;
+          const { name, numberPosts } = tag
+
+          const defaultBtnClass =
+            'w-full my-2 badge badge-outline text-3xl p-5 mx-1 hover:bg-white cursor-pointer '
+          const activeBtnClass = defaultBtnClass + ' bg-white text-primary'
 
           return (
-            <div key={id} className="indicator">
+            <div key={name} className="indicator">
               <span className="indicator-item indicator-center badge badge-primary ">
                 {numberNormalized(numberPosts)}
               </span>
-              <Badge name={name} onClick={onClick} mode={mode} />
+              <Badge
+                name={name}
+                onClick={() => {
+                  dispatch(setFileTags(name) as any)
+                }}
+                className={
+                  selectedTags.includes(name) ? activeBtnClass : defaultBtnClass
+                }
+              />
             </div>
-          );
+          )
         })}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -80,11 +90,11 @@ const FileTags = () => {
         className="grid bg-base-100 h-72 md:h-32 carousel carousel-vertical rounded-box w-full mx-auto"
       >
         {tagsPerPage.map((tags, index) => {
-          return <CustomBadge key={index} tags={tags} />;
+          return <CustomBadge key={index} tags={tags} />
         })}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default FileTags;
+export default FileTags

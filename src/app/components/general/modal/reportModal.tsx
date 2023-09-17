@@ -1,17 +1,16 @@
-import { fetchCreateOrUpdateReport } from '@/app/store/slices/infoFile/infoFileReports.action';
-import { normalizeText } from 'normalize-text';
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux'
+
+import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 const CheckBoxContainer = ({
   name,
   checked,
   value,
 }: {
-  name: string;
-  checked: boolean;
-  value: string;
+  name: string
+  checked: boolean
+  value: string
 }) => {
   return (
     <label className="label cursor-pointer">
@@ -24,14 +23,12 @@ const CheckBoxContainer = ({
         value={value}
       />
     </label>
-  );
-};
+  )
+}
 
 const ReportModal = () => {
-  const dispatch = useDispatch();
-  const { id } = useSelector((state: any) => state.user);
-  const { reports, cid } = useSelector((state: any) => state.infoFile);
-  const [editReport, setEditReport] = useState(false);
+  const dispatch = useDispatch()
+  const { id } = useSelector((state: any) => state.user)
 
   const [reportReason, setReportReason] = useState([
     {
@@ -64,67 +61,15 @@ const ReportModal = () => {
       checked: false,
       value: 'other',
     },
-  ]);
+  ])
 
-  const [comments, setComments] = useState('');
-  const reportFound = useMemo(
-    () => reports.find((report: any) => report.userId === id),
-    [reports]
-  );
-
-  useEffect(() => {
-    const reportForm = document.getElementById('reportForm');
-    const checkedCheckboxes = reportForm?.querySelectorAll(
-      'input[type=checkbox]:checked'
-    ) as any;
-    checkedCheckboxes?.forEach((checkbox: any) => {
-      checkbox.checked = false;
-    });
-
-    if (!reportFound) return;
-
-    reportFound?.reasons.forEach((reason: any) => {
-      const checkbox = reportForm?.querySelector(
-        `input[value=${reason}]`
-      ) as HTMLInputElement;
-      if (!checkbox) return;
-      checkbox.checked = true;
-    });
-
-    const reportComments = document.getElementById('reportComments');
-    reportComments?.setAttribute('value', reportFound?.comments);
-
-    setComments(reportFound.comments);
-  }, [reportFound, cid]);
+  const [comments, setComments] = useState('')
+  const reportFound = false
 
   const handleReport = async (e: any) => {
-    const reportForm = document.getElementById('reportForm');
-    // get all the checked checkboxes
-    const checkedCheckboxes = reportForm?.querySelectorAll(
-      'input[type=checkbox]:checked'
-    );
-    const reasons = [] as string[];
-    checkedCheckboxes?.forEach((checkbox) => {
-      const value = checkbox.getAttribute('value');
-      if (value) {
-        reasons.push(value);
-      }
-    });
-
-    dispatch(
-      fetchCreateOrUpdateReport({
-        comments: normalizeText(comments),
-        reasons: reasons,
-      }) as any
-    );
-
-    if (reportFound) {
-      toast.info('Report Updated, Thank you!');
-      return;
-    } else {
-      toast.success('Report Created, Thank you!');
-    }
-  };
+    e.preventDefault()
+    toast.success('Report Created, Thank you!')
+  }
 
   return (
     <>
@@ -163,7 +108,7 @@ const ReportModal = () => {
               <p>
                 <div id="reportForm" className="form-control">
                   {reportReason.map((reason, index) => {
-                    const { name, value, checked } = reason;
+                    const { name, value, checked } = reason
                     return (
                       <CheckBoxContainer
                         key={index}
@@ -171,7 +116,7 @@ const ReportModal = () => {
                         value={value}
                         checked={checked}
                       />
-                    );
+                    )
                   })}
                   <textarea
                     id="reportComments"
@@ -218,7 +163,7 @@ const ReportModal = () => {
               <p>
                 <div id="reportForm" className="form-control">
                   {reportReason.map((reason, index) => {
-                    const { name, value, checked } = reason;
+                    const { name, value, checked } = reason
                     return (
                       <CheckBoxContainer
                         key={index}
@@ -226,7 +171,7 @@ const ReportModal = () => {
                         value={value}
                         checked={checked}
                       />
-                    );
+                    )
                   })}
                   <textarea
                     onChange={(e) => setComments(e.target.value)}
@@ -257,7 +202,7 @@ const ReportModal = () => {
         </label>
       </label>
     </>
-  );
-};
+  )
+}
 
-export default ReportModal;
+export default ReportModal

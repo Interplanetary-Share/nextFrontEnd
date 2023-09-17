@@ -1,15 +1,12 @@
 export interface ITag {
-  id: string | number;
-  name: string;
-  numberPosts: number;
-  onClick: () => void;
-  mode: string;
+  name: string
+  numberPosts: number
 }
 
 interface ICalculateTagsPerPage {
-  widthCharater: number;
-  maxWith: number | undefined;
-  tags: Array<ITag>;
+  widthCharater: number
+  maxWith: number | undefined
+  tags: Array<ITag>
 }
 
 export const calculateTagsPerPage = ({
@@ -17,26 +14,23 @@ export const calculateTagsPerPage = ({
   maxWith = 1000,
   tags,
 }: ICalculateTagsPerPage) => {
-  const tagsPerPage = [] as Array<Array<ITag>>;
-  let tagsPerPageTemp = [] as Array<ITag>;
-  let width = 0;
+  const tagsPerPage = [] as Array<Array<ITag>>
+  let tagsPerPageTemp = [] as Array<ITag>
+  let width = 0
 
   tags.forEach((tag, index) => {
-    width += tag.name.length * widthCharater;
+    width += tag.name.length * widthCharater
     if (width >= maxWith) {
-      tagsPerPage.push(tagsPerPageTemp);
-      tagsPerPageTemp = [];
-      width = 0;
+      tagsPerPage.push(tagsPerPageTemp)
+      tagsPerPageTemp = []
+      width = 0
     } else {
-      tagsPerPageTemp.push(tag);
+      tagsPerPageTemp.push(tag)
     }
     if (index === tags.length - 1) {
-      tagsPerPage.push(tagsPerPageTemp);
+      tagsPerPage.push(tagsPerPageTemp)
     }
-  });
+  })
 
-  return tagsPerPage;
-};
-
-// const widthCharater = 10;
-// const maxWith = 1000;
+  return tagsPerPage
+}

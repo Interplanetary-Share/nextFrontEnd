@@ -1,27 +1,22 @@
-import NeedLoginModal from '../components/general/modal/needLogin';
-import ReportModal from '../components/general/modal/reportModal';
-import ShareModal from '../components/general/modal/shareModal';
-import UploadFile from '../components/home/uploadFile/uploadFile';
-import useAnalitics from './custom/useAnalitics';
-import useInitIpfs from './custom/useInitIpfs';
-import useRedirect from './custom/useRedirect';
-import useSocketInit from './sockets/useSocketInit';
-import useCheckUserInfo from './state/useCheckUserInfo';
-import useGetFileInfo from './state/useGetFileInfo';
-import useGetFiles from './state/useGetFiles';
-import useGetTags from './state/useGetTags';
+import NeedLoginModal from '../components/general/modal/needLogin'
+import ReportModal from '../components/general/modal/reportModal'
+import ShareModal from '../components/general/modal/shareModal'
+import UploadFile from '../components/home/uploadFile/uploadFile'
+import useAnalitics from './custom/useAnalitics'
+import useCheckUserInfo from './state/useCheckUserInfo'
+import useGalacFetchInit from './custom/useGalacFetchInit'
+import useGetFileInfo from './state/useGetFile'
+import useGetFiles from './state/useGetFiles'
+import useRedirect from './custom/useRedirect'
 
 const HooksContainer = () => {
-  useInitIpfs(); //DISABLED FOR NOW
-  useAnalitics();
-  useRedirect();
-  useCheckUserInfo();
+  useGalacFetchInit()
+  useAnalitics()
+  useGetFiles()
+  useGetFileInfo()
 
-  useGetTags();
-
-  useGetFileInfo(); //get fileinfo from DB and preload all files
-  useGetFiles(); //get filesinfo  from DB and preload cover files
-  useSocketInit(); //init the socket and wait to download files to preload files.
+  useRedirect()
+  useCheckUserInfo()
   return (
     <>
       <ShareModal />
@@ -29,7 +24,7 @@ const HooksContainer = () => {
       <NeedLoginModal />
       <UploadFile />
     </>
-  );
-};
+  )
+}
 
-export default HooksContainer;
+export default HooksContainer

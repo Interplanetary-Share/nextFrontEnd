@@ -1,121 +1,61 @@
-import { createSlice } from '@reduxjs/toolkit';
-import {
-  checkFileIsOnTheServerReducer,
-  fetchUploadFileReducer,
-} from './uploadFile.action';
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface IUploadFile {
-  name: string;
-  tags: string[];
-  description: string;
-  size: number;
-  type: string;
-  nativeFile: {
-    file: File | null;
-    cover: File | null;
-  };
-  octetStream: {
-    file: any;
-    cover: any;
-  };
-  blob: {
-    cover: any;
-  };
-
-  fetchUploadFile: {
-    loading: boolean;
-    error: string;
-  };
-  checkFileIsOnTheServer: {
-    loading: boolean;
-    error: string;
-  };
-
-  fetchUpdateIntegrityFile: {
-    loading: boolean;
-    error: string;
-  };
+  file: File | undefined
+  name: string | undefined
+  description: string
+  extraProperties: {
+    cover: string | undefined
+    tags: Array<string>
+  }
+  uploadUid: string | undefined
 }
 
 const initialState: IUploadFile = {
-  name: '',
-  tags: [],
+  name: undefined,
   description: '',
-  size: 0,
-  type: '',
-  nativeFile: {
-    file: null,
-    cover: null,
+  file: undefined,
+  extraProperties: {
+    cover: undefined,
+    tags: [],
   },
-  octetStream: {
-    file: null,
-    cover: null,
-  },
-  blob: {
-    cover: null,
-  },
-
-  fetchUploadFile: {
-    loading: false,
-    error: '',
-  },
-  checkFileIsOnTheServer: {
-    loading: false,
-    error: '',
-  },
-
-  fetchUpdateIntegrityFile: {
-    loading: false,
-    error: '',
-  },
-};
+  uploadUid: undefined,
+}
 
 const uploadFileSlice = createSlice({
   name: 'uploadFile',
   initialState,
   reducers: {
-    setFileInfo: (state, action) => {
-      const {
-        name,
-        tags,
-        description,
-        size,
-        type,
-        octetStream,
-        blob,
-        cid,
-        nativeFile,
-      } = action.payload;
-
-      if (name) state.name = name;
-      if (description) state.description = description;
-      if (size) state.size = size;
-      if (tags) state.tags = tags;
-      if (type) state.type = type;
-
-      if (nativeFile) {
-        if (nativeFile.file) state.nativeFile.file = nativeFile.file;
-        if (nativeFile.cover) state.nativeFile.cover = nativeFile.cover;
+    setFileInfo: (
+      state,
+      action: {
+        payload: {
+          name?: string
+          file?: File
+          description?: string
+          cover?: string
+          tags?: Array<string>
+        }
       }
-
-      if (octetStream) {
-        if (octetStream.file) state.octetStream.file = octetStream.file;
-        if (octetStream.cover) state.octetStream.cover = octetStream.cover;
-      }
-      if (blob) {
-        if (blob.cover) state.blob.cover = blob.cover;
-      }
+    ) => {
+      const { name, description, file, cover, tags } = action.payload
+      if (name) state.name = name
+      if (description) state.description = description
+      if (file) state.file = file
+      if (cover) state.extraProperties.cover = cover
+      if (tags) state.extraProperties.tags = tags
     },
     setEmptyFileInfo: (state) => {
-      state = initialState;
+      state = initialState
+    },
+    setRandomUploadUid: (state) => {
+      state.uploadUid = Math.random().toString(36).substring(7)
     },
   },
-  extraReducers: {
-    ...fetchUploadFileReducer,
-    ...checkFileIsOnTheServerReducer,
-  },
-});
+  extraReducers: {},
+})
 
-export const { setFileInfo, setEmptyFileInfo } = uploadFileSlice.actions;
+export const { setFileInfo, setEmptyFileInfo, setRandomUploadUid } =
+  uploadFileSlice.actions
 
-export default uploadFileSlice.reducer;
+export default uploadFileSlice.reducer

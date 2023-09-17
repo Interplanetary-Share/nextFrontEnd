@@ -1,28 +1,27 @@
-import { apiHostname } from '@/app/store/endpoints';
-
 export const userNeedLogin = () => {
-  document.getElementById('needLogin')?.click();
-  return;
-};
+  document.getElementById('needLogin')?.click()
+  return
+}
 
 export const shareFileModal = ({ cid, name }: any) => {
-  document.getElementById('shareModal')?.click();
+  document.getElementById('shareModal')?.click()
 
-  const link = apiHostname + '/' + cid;
+  const hostname = window.location.hostname
+  const link = hostname + '/' + cid
 
   const getElement = (id: string) => {
-    return document.getElementById(id) as any;
-  };
+    return document.getElementById(id) as any
+  }
 
-  getElement('shareModalLink').value = link;
-  getElement('shareModalCID').value = cid;
-  getElement('ShareModalTitle').innerText = name;
+  getElement('shareModalLink').value = link
+  getElement('shareModalCID').value = cid
+  getElement('ShareModalTitle').innerText = name
 
-  return;
-};
+  return
+}
 
 export const reportFileModal = ({ cid, name }: any) => {
-  document.getElementById('reportModal')?.click();
+  document.getElementById('reportModal')?.click()
 
   // const getElement = (id: string) => {
   //   return document.getElementById(id) as any;
@@ -31,5 +30,5 @@ export const reportFileModal = ({ cid, name }: any) => {
   // getElement('reportModalCID').value = cid;
   // getElement('reportModalTitle').innerText = name;
 
-  return;
-};
+  return
+}

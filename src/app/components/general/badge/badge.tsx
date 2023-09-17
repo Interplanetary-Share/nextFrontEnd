@@ -1,27 +1,15 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
 interface BadgeProps {
-  name: string;
-  onClick?: () => void;
-  mode: string;
+  name: string
+  onClick?: () => void
+  className: string
 }
 
-const Badge = ({ name, onClick, mode }: BadgeProps) => {
-  const { filters } = useSelector((state: any) => state.allFiles);
-
-  const defaultBtnClass =
-    'w-full my-2 badge badge-outline text-3xl p-5 mx-1 hover:bg-white cursor-pointer ';
-  const activeBtnClass =
-    'w-full my-2  badge badge-outline text-3xl p-5 mx-1 hover:bg-white cursor-pointer bg-white text-primary';
-
-  const btnClass = filters.mode === mode ? activeBtnClass : defaultBtnClass;
-
+const Badge = ({ name, onClick, className }: BadgeProps) => {
   return (
-    <div onClick={onClick} className={btnClass}>
+    <div onClick={onClick} className={className}>
       {name}
     </div>
-  );
-};
+  )
+}
 
-export default Badge;
+export default Badge

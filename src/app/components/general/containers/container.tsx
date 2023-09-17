@@ -1,8 +1,17 @@
-import React from 'react';
+import { ReactNode } from 'react'
 
-const Container = (props: { children: React.ReactNode }) => {
-  const { children } = props;
-  return <div className="container mx-auto w-full px-4 ">{children}</div>;
-};
+const Container = (props: { children: ReactNode }) => {
+  const { children } = props
+  return (
+    <div
+      className="container mx-auto w-full px-4"
+      style={{
+        minHeight: 'calc(60vh)',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
 
-export default Container;
+export default Container

@@ -21,3 +21,19 @@
 iframe {
   max-width: 100%;
 }
+
+* button,
+* input,
+* a,
+* p {
+  z-index: 2;
+}
+
+* ul,
+* li {
+  z-index: 999;
+}
+
+.tox-notifications-container {
+  display: none !important;
+}

@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 

@@ -1,27 +1,16 @@
 import {
   handleDownload,
-  handleReport,
   handleShareFile,
-} from '@/app/utils/fileOptions/handleOptions';
-import { useDispatch, useSelector } from 'react-redux';
+} from '@/app/utils/fileOptions/handleOptions'
 
 interface ICardOptionsUpper {
-  cid: string;
-  name: string;
-  type: string;
-  link?: string; // link to the blob file
+  cid: string
+  name: string
+  type: string
+  link?: string // link to the blob file
 }
 
 const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
-  const { id, reports } = useSelector((state: any) => state.user);
-  // const { cid } = useSelector((state: any) => state.infoFile);
-  const dispatch = useDispatch();
-
-  const defaultReportBtnClass = 'tooltip btn btn-ghost pt-1';
-  const reportBtnClass = reports.includes(cid)
-    ? defaultReportBtnClass + 'btn-active'
-    : defaultReportBtnClass;
-
   return (
     <div>
       <div className="btn-group  mt-2 w-full mx-auto justify-end absolute">
@@ -32,7 +21,7 @@ const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
               name,
             })
           }
-          className="tooltip btn  btn-ghost"
+          className="tooltip btn  btn-ghost flex align-middle justify-center"
           data-tip="Share link"
         >
           <a className="text-xl">🔗</a>
@@ -45,7 +34,6 @@ const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
                   name,
                   link,
                   type,
-                  dispatch,
                 })
               }
               className="text-xl"
@@ -54,26 +42,9 @@ const CardOptionsUpper = ({ cid, link, name, type }: ICardOptionsUpper) => {
             </a>
           </div>
         )}
-
-        {/* Disabled */}
-        {false && (
-          <div
-            className={reportBtnClass}
-            onClick={() =>
-              handleReport({
-                id,
-                cid,
-                dispatch,
-              })
-            }
-            data-tip="Report file"
-          >
-            <a className="text-xl ">🚩</a>
-          </div>
-        )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CardOptionsUpper;
+export default CardOptionsUpper

@@ -1,44 +1,49 @@
-/* eslint-disable @next/next/no-sync-scripts */
+import './hideTinyMsg.css'
+
 import {
-  fetchCreateComment,
-  fetchGetComments,
-} from '@/app/store/slices/infoFile/infoFileComments.action';
-import { userNeedLogin } from '@/app/utils/misc/modalsToggle';
-import { Editor } from '@tinymce/tinymce-react';
-import { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import Avatar from '../../general/avatar/avatar';
-import './hideTinyMsg.css';
+  IComments,
+  updateInfoFile,
+} from '@/app/store/slices/infoFile/infoFile.slice'
+import { useDispatch, useSelector } from 'react-redux'
+
+import Avatar from '../../general/avatar/avatar'
+import { Editor } from '@tinymce/tinymce-react'
+import { ipfsGalactFetchClient } from '@interplanetary-share/hooks.ipfs-client'
+import { toast } from 'react-toastify'
+import { useRef } from 'react'
+import { userNeedLogin } from '@/app/utils/misc/modalsToggle'
 
 const Comments = () => {
-  const { id: userId } = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
-  const editorRef = useRef(null) as any;
+  const {
+    id: userId,
+    coverImg,
+    displayName,
+  } = useSelector((state: any) => state.user)
+  const { cid } = useSelector((state: any) => state.infoFile)
+  const { updateFile, getFile } = ipfsGalactFetchClient()
+
+  const dispatch = useDispatch()
+  const editorRef = useRef(null) as any
 
   const handleCreateComment = async () => {
     if (!userId || userId === '') {
-      userNeedLogin();
-      return;
+      userNeedLogin()
+      return
     }
-
-    const commentInHTML = await editorRef.current.getContent().trim();
+    const commentInHTML = await editorRef.current.getContent().trim()
     const commmentInText = await editorRef.current
       .getContent({
         format: 'text',
       })
-      .trim();
-
+      .trim()
     if (commentInHTML.length > 1000 || commmentInText.length > 1000) {
-      toast.error('Comment must be less than 1000 characters long');
-      return;
+      toast.error('Comment must be less than 1000 characters long')
+      return
     }
-
     if (commentInHTML.includes('script')) {
-      toast.error('Comment must not include script tag');
-      return;
+      toast.error('Comment must not include script tag')
+      return
     }
-
     if (!(commentInHTML.includes('iframe') || commentInHTML.includes('img'))) {
       if (
         !commentInHTML ||
@@ -46,23 +51,48 @@ const Comments = () => {
         commentInHTML.length < 10 ||
         commmentInText.length < 10
       ) {
-        toast.error('Comment must be at least 10 characters long');
-        return;
+        toast.error('Comment must be at least 10 characters long')
+        return
       }
     }
+    const commentInHex = Buffer.from(commentInHTML).toString('hex')
 
-    const commentInHex = Buffer.from(commentInHTML).toString('hex');
+    const file = await getFile(cid, {
+      showBlobUrl: false,
+      showExtraProps: true,
+      showInfoFile: true,
+    })
+
+    if (!file) return
+    if (!file.extraProperties) file.extraProperties = {}
+    if (!file.extraProperties.comments) file.extraProperties.comments = []
+
+    const comments = file?.extraProperties?.comments as IComments[] | []
+    const newComment = {
+      id: userId + cid + Date.now(),
+      userId,
+      comment: commentInHex,
+      likes: [],
+      coverImg,
+      displayName,
+      date: Date.now().toString(),
+    } as IComments
+
+    const newComments = [...comments, newComment]
+    const updatedFile = await updateFile(cid, {
+      extraProperties: {
+        comments: newComments,
+      },
+    })
+
     dispatch(
-      fetchCreateComment({
-        comment: commentInHex,
-      }) as any
+      updateInfoFile({
+        extraProperties: updatedFile.extraProperties,
+      })
     )
-      .unwrap()
-      .then((res: any) => {
-        dispatch(fetchGetComments() as any);
-        editorRef.current.setContent('');
-      });
-  };
+
+    toast.success('Comment created')
+  }
 
   return (
     <>
@@ -105,7 +135,7 @@ const Comments = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Comments;
+export default Comments

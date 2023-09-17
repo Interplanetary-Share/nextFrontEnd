@@ -1,34 +1,28 @@
-import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice';
-import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
+import { setFileInfo } from '@/app/store/slices/uploadFile/uploadFile.slice'
+import { toast } from 'react-toastify'
+import { useDispatch } from 'react-redux'
 
 const Hero = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event?.target?.files?.[0];
-    if (!file) return;
+    const file = event?.target?.files?.[0]
+    if (!file) return
 
     if (file.size > 3000000000) {
-      document.getElementById('Inputfile')?.click();
-      return toast.error('File size is too big (max 3GB)');
+      document.getElementById('Inputfile')?.click()
+      return toast.error('File size is too big (max 3GB)')
     }
 
     dispatch(
       setFileInfo({
         name: file.name,
-        size: file.size,
-        type: file.type,
-        nativeFile: {
-          file: file,
-        },
+        file,
       })
-    );
+    )
 
-    document.getElementById('opnUploadFileModal')?.click();
-  };
+    document.getElementById('opnUploadFileModal')?.click()
+  }
 
   return (
     <>
@@ -52,7 +46,7 @@ const Hero = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Hero;
+export default Hero

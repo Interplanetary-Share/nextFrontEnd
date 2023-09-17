@@ -1,19 +1,13 @@
-import React, { useMemo } from 'react';
-
-import { getAuth } from 'firebase/auth';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   setEmptyUserInfo,
   setUserInfo,
-} from '../../store/slices/user/user.slice';
-import { fetchCreateUser } from '../../store/slices/user/user.action';
+} from '@/app/store/slices/user/user.slice'
+
+import { getAuth } from 'firebase/auth'
+import { useDispatch } from 'react-redux'
 
 const useCheckUserInfo = () => {
-  const { id, email, coverImg, displayName } = useSelector(
-    (state: any) => state.user
-  );
-
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   getAuth().onAuthStateChanged((user) => {
     if (user) {
       dispatch(
@@ -23,25 +17,11 @@ const useCheckUserInfo = () => {
           coverImg: user.photoURL,
           displayName: user.displayName,
         })
-      );
+      )
     } else {
-      dispatch(setEmptyUserInfo());
+      dispatch(setEmptyUserInfo())
     }
-  });
+  })
+}
 
-  useMemo(() => {
-    if (!id || id === '') return;
-    console.log('useCheckUserInfo');
-    dispatch(
-      fetchCreateUser({
-        id,
-        email,
-        coverImg,
-        displayName,
-        language: 'en',
-      }) as any
-    );
-  }, [id]);
-};
-
-export default useCheckUserInfo;
+export default useCheckUserInfo

@@ -1,10 +1,10 @@
-import Tabs from '@/app/components/general/tabs/tabs';
-import React from 'react';
-import InfoTable from './infoTable';
-import RelatedFiles from './relatedFiles';
+import InfoTable from './infoTable'
+import React from 'react'
+import RelatedFiles from './relatedFiles'
+import Tabs from '@/app/components/general/tabs/tabs'
 
 const RightDetailsWrapper = () => {
-  const [activeTab, setActiveTab] = React.useState('details');
+  const [activeTab, setActiveTab] = React.useState('details')
   return (
     <>
       <Tabs
@@ -24,7 +24,7 @@ const RightDetailsWrapper = () => {
       {activeTab === 'details' && <InfoTable />}
       {activeTab === 'related' && <RelatedFiles />}
     </>
-  );
-};
+  )
+}
 
-export default RightDetailsWrapper;
+export default RightDetailsWrapper

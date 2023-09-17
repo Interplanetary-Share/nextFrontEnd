@@ -1,33 +1,33 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react'
 
 interface TabsProps {
-  activeTab: string;
+  activeTab: string
   tabs: Array<{
-    key: string;
-    name: string;
-  }>;
-  onTabChange?: (key: string) => void;
+    key: string
+    name: string
+  }>
+  onTabChange?: (key: string) => void
 }
 
 const Tabs = ({ tabs, activeTab: activeTabProp, onTabChange }: TabsProps) => {
-  const defaultClass = 'tab tab-bordered';
-  const activeClass = 'tab tab-bordered tab-active';
+  const defaultClass = 'tab tab-bordered'
+  const activeClass = 'tab tab-bordered tab-active'
 
-  const [activeTab, setactiveTab] = useState(activeTabProp);
+  const [activeTab, setactiveTab] = useState(activeTabProp)
 
   const handleClick = (key: string) => {
-    setactiveTab(key);
-  };
+    setactiveTab(key)
+  }
 
   useMemo(() => {
-    if (!onTabChange) return;
-    onTabChange(activeTab);
-  }, [activeTab]);
+    if (!onTabChange) return
+    onTabChange(activeTab)
+  }, [activeTab])
 
   return (
-    <div className="tabs  pt-4">
+    <div className="tabs  pt-4 sticky top-0 bg-base-200 w-full justify-center  mt-3  rounded-3xl p-3 z-50">
       {tabs.map((tab) => {
-        const className = tab.key === activeTab ? activeClass : defaultClass;
+        const className = tab.key === activeTab ? activeClass : defaultClass
 
         return (
           <a
@@ -37,10 +37,10 @@ const Tabs = ({ tabs, activeTab: activeTabProp, onTabChange }: TabsProps) => {
           >
             {tab.name}
           </a>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default Tabs;
+export default Tabs

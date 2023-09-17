@@ -1,24 +1,32 @@
 /* eslint-disable @next/next/no-img-element */
-import { useGetBlobUrl } from '@/app/hooks/custom/useGetBlobUrl';
-import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert';
-import { getIpfsGateway } from '@/app/utils/ipfs/gateways';
-import { format } from 'date-fns';
-import { Key } from 'react';
-import { useSelector } from 'react-redux';
 
-interface Field {
-  key: string;
-  value: string;
-}
+import { Key, useMemo } from 'react'
+
+import { IInfoFile } from '@/app/store/slices/infoFile/infoFile.slice'
+import { byteNormalize } from '@/app/utils/convert/bytesSizeConvert'
+import { format } from 'date-fns'
+import { useSelector } from 'react-redux'
 
 const InfoTable = () => {
-  const { size, type, lastModified, tags, cover, date } = useSelector(
+  const { size, type, createdAt, extraProperties } = useSelector(
     (state: any) => state.infoFile
-  );
+  ) as IInfoFile
 
-  const image = useGetBlobUrl(cover); //ESTO TRAE LA IMAGEN DE IPFS
+  const cover = useMemo(() => {
+    if (extraProperties?.cover) {
+      return extraProperties.cover as string
+    }
+    return undefined
+  }, [extraProperties])
 
-  const fields: Array<Field> = [
+  const tags = useMemo(() => {
+    if (extraProperties?.tags) {
+      return extraProperties.tags as string[]
+    }
+    return undefined
+  }, [extraProperties])
+
+  const fields = [
     size && {
       key: 'Size',
       value: byteNormalize(size),
@@ -29,16 +37,11 @@ const InfoTable = () => {
       value: type,
     },
 
-    lastModified && {
-      key: 'Last Modified',
-      value: lastModified,
-    },
-
-    date && {
+    createdAt && {
       key: 'Upload Date',
-      value: format(new Date(date), 'dd/MM/yyyy'),
+      value: format(new Date(createdAt), 'dd/MM/yyyy'),
     },
-  ];
+  ]
 
   return (
     <div className="w-full flex">
@@ -46,21 +49,24 @@ const InfoTable = () => {
         {cover && (
           <div className="avatar w-full">
             <div className="w-64 rounded mx-auto">
-              <img src={image} alt="cover" />
+              <img src={cover} alt="cover" />
             </div>
           </div>
         )}
 
-        <dl className="grid grid-cols-1 gap-x-4 gap-y-8">
-          {fields.map((field, idx) => (
-            <div key={idx} className="sm:col-span-1 p-3 m-3">
+        <dl className="flex flex-col">
+          {fields.map((field: any, idx) => (
+            <div
+              key={idx}
+              className="flex gap-4 p-2 my-2 align-middle justify-center "
+            >
               <dt className="text-sm font-medium text-gray-500">{field.key}</dt>
               <dd className="mt-1 text-sm text-gray-900">{field.value}</dd>
             </div>
           ))}
 
           <div className="sm:col-span-2">
-            {tags.map((tag: string, idx: Key | null | undefined) => (
+            {tags?.map((tag: string, idx: Key | null | undefined) => (
               <span
                 key={idx}
                 className="badge badge-outline px-2 mx-2 my-1 py-1"
@@ -72,7 +78,7 @@ const InfoTable = () => {
         </dl>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default InfoTable;
+export default InfoTable

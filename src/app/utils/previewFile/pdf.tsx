@@ -1,15 +1,9 @@
-import React from 'react';
-import { Document, Page } from 'react-pdf';
 interface PdfProps {
-  file: any; //url or blob
+  url: string
 }
 
-const Pdf = ({ file }: PdfProps) => {
-  return (
-    <Document file={file} renderMode="canvas">
-      <Page pageNumber={0} />
-    </Document>
-  );
-};
+const Pdf = ({ url }: PdfProps) => {
+  return <iframe className="w-full h-screen" src={url} />
+}
 
-export default Pdf;
+export default Pdf

@@ -1,57 +1,54 @@
-import {
-  handleDislike,
-  handleFavorite,
-  handleLike,
-} from '@/app/utils/fileOptions/handleOptions';
-import numberNormalized from '@/app/utils/misc/numberNormalized';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Interface } from 'readline';
+import { handlePropFile } from './actions'
+import { ipfsGalactFetchClient } from '@interplanetary-share/hooks.ipfs-client'
+import numberNormalized from '@/app/utils/misc/numberNormalized'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import { userNeedLogin } from '@/app/utils/misc/modalsToggle'
 
 interface CardStatsProps {
-  cid: string;
-  likes?: [string];
-  dislikes?: [string];
-  favorites?: [string];
+  cid: string
+
+  likes?: string[]
+  dislikes?: string[]
+  favorites?: string[]
 }
-const CardStats = ({ cid, likes, dislikes, favorites }: CardStatsProps) => {
-  const {
-    id,
-    likes: userLikes,
-    dislikes: userDislikes,
-    favorites: userFavorites,
-  } = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
+const CardStats = ({
+  cid,
+  likes: likesProp,
+  dislikes: dislikesProp,
+  favorites: favoritesProp,
+}: CardStatsProps) => {
+  const { id: userId } = useSelector((state: any) => state.user)
+  const [likes, setLikes] = useState(likesProp)
+  const [dislikes, setDislikes] = useState(dislikesProp)
+  const [favorites, setFavorites] = useState(favoritesProp)
 
-  const defaultBtnClass = 'btn btn-ghost text-2xl ';
-  const defaultStatsClass = 'stat-value mx-auto';
+  const { updateFile, getFile } = ipfsGalactFetchClient()
 
-  const likedBtnClass = userLikes.includes(cid)
-    ? defaultBtnClass + 'btn-active'
-    : defaultBtnClass;
-
-  const dislikedBtnClass = userDislikes.includes(cid)
-    ? defaultBtnClass + 'btn-active'
-    : defaultBtnClass;
-
-  const favoritedBtnClass = userFavorites.includes(cid)
-    ? defaultBtnClass + 'btn-active'
-    : defaultBtnClass;
+  const defaultBtnClass = 'btn btn-ghost text-2xl '
+  const defaultStatsClass = 'stat-value mx-auto'
 
   return (
-    <div className="stats shadow w-full">
-      <div className="stat">
-        <div className="stat-title">
+    <div className="stats shadow  m-4">
+      <div className="stat m-0 w-full">
+        <div className="stat-title mx-auto">
           <a
             onClick={() => {
-              handleLike({
-                id,
+              if (!userId) userNeedLogin()
+              const prop = 'likes'
+              handlePropFile({
                 cid,
-                array: userLikes,
-                dispatch,
-              });
+                prop,
+                userId,
+                getFile,
+                updateFile,
+              }).then((res: any) => setLikes(res))
             }}
-            className={likedBtnClass}
+            className={
+              likes?.includes(userId)
+                ? defaultBtnClass + 'btn-active'
+                : defaultBtnClass
+            }
           >
             😍
           </a>
@@ -62,17 +59,24 @@ const CardStats = ({ cid, likes, dislikes, favorites }: CardStatsProps) => {
       </div>
 
       <div className="stat">
-        <div className="stat-title">
+        <div className="stat-title mx-auto">
           <a
             onClick={() => {
-              handleDislike({
-                id,
+              if (!userId) userNeedLogin()
+              const prop = 'dislikes'
+              handlePropFile({
                 cid,
-                array: userDislikes,
-                dispatch,
-              });
+                prop,
+                userId,
+                getFile,
+                updateFile,
+              }).then((res: any) => setDislikes(res))
             }}
-            className={dislikedBtnClass}
+            className={
+              dislikes?.includes(userId)
+                ? defaultBtnClass + 'btn-active'
+                : defaultBtnClass
+            }
           >
             🤮
           </a>
@@ -82,18 +86,25 @@ const CardStats = ({ cid, likes, dislikes, favorites }: CardStatsProps) => {
         </div>
       </div>
 
-      <div className="stat">
-        <div className="stat-title">
+      <div className="stat ">
+        <div className="stat-title mx-auto">
           <a
             onClick={() => {
-              handleFavorite({
-                id,
+              if (!userId) userNeedLogin()
+              const prop = 'favorites'
+              handlePropFile({
                 cid,
-                array: userFavorites,
-                dispatch,
-              });
+                prop,
+                userId,
+                getFile,
+                updateFile,
+              }).then((res: any) => setFavorites(res))
             }}
-            className={favoritedBtnClass}
+            className={
+              favorites?.includes(userId)
+                ? defaultBtnClass + 'btn-active'
+                : defaultBtnClass
+            }
           >
             ❤️‍🔥
           </a>
@@ -103,7 +114,7 @@ const CardStats = ({ cid, likes, dislikes, favorites }: CardStatsProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CardStats;
+export default CardStats

@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 
 import { IUser } from './user.slice'

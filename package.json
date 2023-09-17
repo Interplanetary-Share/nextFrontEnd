@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
-    "@interplanetary-share/hooks.ipfs-client": "^0.0.4",
+    "@interplanetary-share/hooks.ipfs-client": "^0.0.5",
     "@next/font": "13.1.6",
     "@react-three/drei": "^9.83.9",
     "@react-three/fiber": "^8.14.1",

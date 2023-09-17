@@ -1,4 +1,4 @@
-/* eslint-disable */
+// @ts-ignore
 import { initializeApp } from 'firebase/app'
 const firebaseInitialization = () => {
   initializeApp({
